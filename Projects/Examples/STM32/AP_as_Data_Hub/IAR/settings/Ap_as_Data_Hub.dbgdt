@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<Project>
+  <Desktop>
+    <Static>
+      <Debug-Log>
+        
+        
+      <PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows><Window><Factory>Find-in-Files</Factory></Window></Windows></PreferedWindows><ColumnWidth0>20</ColumnWidth0><ColumnWidth1>988</ColumnWidth1></Debug-Log>
+      <Build>
+        <ColumnWidth0>20</ColumnWidth0>
+        <ColumnWidth1>741</ColumnWidth1>
+        <ColumnWidth2>197</ColumnWidth2>
+        <ColumnWidth3>49</ColumnWidth3>
+      <PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows><Window><Factory>Debug-Log</Factory></Window></Windows></PreferedWindows></Build>
+      <Workspace>
+        <ColumnWidths>
+          
+          
+          
+          
+        <Column0>246</Column0><Column1>7</Column1><Column2>12</Column2><Column3>0</Column3></ColumnWidths>
+      </Workspace>
+      <Disassembly>
+        <PreferedWindows>
+          
+          
+          
+          
+        <Position>2</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows><Window><Factory>Locals</Factory></Window></Windows></PreferedWindows>
+        
+        
+        <col-names>
+          
+          
+        <item>Disassembly</item><item>_I0</item></col-names>
+        <col-widths>
+          
+          
+        <item>727</item><item>20</item></col-widths>
+        <DisasmHistory/>
+      <ShowCodeCoverage>0</ShowCodeCoverage><ShowInstrProfiling>0</ShowInstrProfiling></Disassembly>
+      <PROFILING2>
+        <col-names>
+          
+          
+          
+          
+          
+          
+        <item>Function</item><item>PC Samples</item><item>PC Samples (%)</item></col-names>
+        <col-widths>
+          
+          
+          
+          
+          
+          
+        <item>220</item><item>80</item><item>100</item></col-widths>
+      <PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows/></PreferedWindows></PROFILING2>
+      <Auto>
+        <col-names>
+          <item>Expression</item>
+          <item>Location</item>
+          <item>Type</item>
+          <item>Value</item>
+        </col-names>
+        <col-widths>
+          <item>100</item>
+          <item>150</item>
+          <item>100</item>
+          <item>128</item>
+        </col-widths>
+        <PreferedWindows>
+          <Position>2</Position>
+          <ScreenPosX>0</ScreenPosX>
+          <ScreenPosY>0</ScreenPosY>
+          <Windows/>
+        </PreferedWindows>
+      </Auto>
+      <Register><PreferedWindows><Position>2</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows/></PreferedWindows></Register>
+    <Locals><col-names><item>Location</item><item>Type</item><item>Value</item><item>Variable</item></col-names><col-widths><item>150</item><item>100</item><item>204</item><item>145</item></col-widths><PreferedWindows><Position>2</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows><Window><Factory>Disassembly</Factory></Window></Windows></PreferedWindows></Locals><Find-in-Files><ColumnWidth0>600</ColumnWidth0><ColumnWidth1>85</ColumnWidth1><ColumnWidth2>1029</ColumnWidth2><PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows><Window><Factory>Debug-Log</Factory></Window></Windows></PreferedWindows></Find-in-Files><Breakpoints><col-names><item>Breakpoint</item><item>_I0</item></col-names><col-widths><item>500</item><item>35</item></col-widths><PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows/></PreferedWindows></Breakpoints><WATCH_1><expressions><item>lAddr</item><item/></expressions><col-names><item>Expression</item><item>Location</item><item>Type</item><item>Value</item></col-names><col-widths><item>100</item><item>150</item><item>100</item><item>100</item></col-widths></WATCH_1></Static>
+    <Windows>
+      
+      
+      
+      
+    <Wnd4>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-8915-29293</Identity>
+            <TabName>Workspace</TabName>
+            <Factory>Workspace</Factory>
+            <Session>
+              
+            <NodeDict><ExpandedNode>Ap_as_Data_Hub</ExpandedNode><ExpandedNode>Ap_as_Data_Hub/Components</ExpandedNode><ExpandedNode>Ap_as_Data_Hub/Components/bsp</ExpandedNode><ExpandedNode>Ap_as_Data_Hub/Components/mrfi</ExpandedNode><ExpandedNode>Ap_as_Data_Hub/STM32F10x_User</ExpandedNode><ExpandedNode>Ap_as_Data_Hub/peer applications</ExpandedNode><ExpandedNode>Ap_as_Data_Hub/peer applications/Configuration</ExpandedNode><ExpandedNode>Ap_as_Data_Hub/peer applications/Configuration/Access Point</ExpandedNode><ExpandedNode>Ap_as_Data_Hub/peer applications/application</ExpandedNode><ExpandedNode>Ap_as_Data_Hub/peer applications/application/Access Point</ExpandedNode><ExpandedNode>Ap_as_Data_Hub/peer applications/application/End Device</ExpandedNode></NodeDict></Session>
+          </Tab>
+        </Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd4><Wnd5><Tabs><Tab><Identity>TabID-7419-31247</Identity><TabName>Debug Log</TabName><Factory>Debug-Log</Factory><Session/></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd5><Wnd6><Tabs><Tab><Identity>TabID-26825-31293</Identity><TabName>Locals</TabName><Factory>Locals</Factory></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd6><Wnd7><Tabs><Tab><Identity>TabID-13463-31339</Identity><TabName>Watch 1</TabName><Factory>WATCH_1</Factory></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd7></Windows>
+    <Editor>
+      
+      
+      
+      
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\Components\bsp\boards\STM32\bsp_driver_defs.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>678</SelStart><SelEnd>678</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\Components\bsp\boards\STM32\bsp_utility.c</Filename><XPos>0</XPos><YPos>21</YPos><SelStart>967</SelStart><SelEnd>967</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\Components\bsp\bsp.h</Filename><XPos>0</XPos><YPos>152</YPos><SelStart>7294</SelStart><SelEnd>7294</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\Components\mrfi\radios\family1\mrfi_spi.h</Filename><XPos>0</XPos><YPos>105</YPos><SelStart>7831</SelStart><SelEnd>7831</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\Components\bsp\boards\STM32\bsp_config.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>301</SelStart><SelEnd>301</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\Components\simpliciti\nwk\nwk.c</Filename><XPos>1</XPos><YPos>194</YPos><SelStart>8466</SelStart><SelEnd>8466</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\Components\bsp\drivers\code\bsp_generic_buttons.h</Filename><XPos>11</XPos><YPos>43</YPos><SelStart>3546</SelStart><SelEnd>3546</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\Components\bsp\boards\STM32\bsp_button_defs.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>937</SelStart><SelEnd>937</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_exti.c</Filename><XPos>0</XPos><YPos>235</YPos><SelStart>6555</SelStart><SelEnd>6555</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\Components\mrfi\radios\family1\mrfi_spi.c</Filename><XPos>0</XPos><YPos>159</YPos><SelStart>7186</SelStart><SelEnd>7186</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\Components\bsp\boards\STM32\bsp_drivers.c</Filename><XPos>0</XPos><YPos>21</YPos><SelStart>1065</SelStart><SelEnd>1065</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\IAR Systems\ARM\arm\inc\c\stdio.h</Filename><XPos>0</XPos><YPos>184</YPos><SelStart>7783</SelStart><SelEnd>7783</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\Components\mrfi\radios\common\mrfi_f1f2.c</Filename><XPos>0</XPos><YPos>165</YPos><SelStart>6757</SelStart><SelEnd>6757</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\Applications\main_AP_Async_Listen_autoack.c</Filename><XPos>0</XPos><YPos>246</YPos><SelStart>7820</SelStart><SelEnd>7820</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\Components\bsp\boards\STM32\stm32f10x_conf.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>427</SelStart><SelEnd>427</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dbgmcu.h</Filename><XPos>0</XPos><YPos>72</YPos><SelStart>3438</SelStart><SelEnd>3451</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Configuration\End_Device\smpl_config.dat</Filename><XPos>0</XPos><YPos>51</YPos><SelStart>4302</SelStart><SelEnd>4302</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\Components\bsp\boards\STM32\bsp_board_defs.h</Filename><XPos>0</XPos><YPos>67</YPos><SelStart>3643</SelStart><SelEnd>3643</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\Components\simpliciti\nwk_applications\nwk_ioctl.c</Filename><XPos>0</XPos><YPos>291</YPos><SelStart>10172</SelStart><SelEnd>10172</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\Components\simpliciti\nwk\nwk_globals.c</Filename><XPos>0</XPos><YPos>27</YPos><SelStart>2577</SelStart><SelEnd>2583</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\Components\bsp\boards\STM32\bsp_external\mrfi_board_defs.h</Filename><XPos>0</XPos><YPos>10</YPos><SelStart>744</SelStart><SelEnd>744</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\Components\bsp\bsp.c</Filename><XPos>0</XPos><YPos>51</YPos><SelStart>3503</SelStart><SelEnd>3503</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_usart.c</Filename><XPos>0</XPos><YPos>867</YPos><SelStart>31223</SelStart><SelEnd>31223</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\Components\bsp\boards\STM32\system_stm32f10x.c</Filename><XPos>0</XPos><YPos>18</YPos><SelStart>1093</SelStart><SelEnd>1093</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\Components\bsp\boards\STM32\bsp_external\mrfi_board.c</Filename><XPos>0</XPos><YPos>111</YPos><SelStart>1019</SelStart><SelEnd>1019</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\Components\simpliciti\nwk\nwk_api.c</Filename><XPos>0</XPos><YPos>674</YPos><SelStart>22864</SelStart><SelEnd>22864</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\Applications\main_manyEDs_autoack.c</Filename><XPos>0</XPos><YPos>16</YPos><SelStart>1358</SelStart><SelEnd>1358</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\Components\SimpliciTI\nwk\nwk_types.h</Filename><XPos>0</XPos><YPos>33</YPos><SelStart>2731</SelStart><SelEnd>2731</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\Components\mrfi\mrfi.h</Filename><XPos>0</XPos><YPos>104</YPos><SelStart>5805</SelStart><SelEnd>5805</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\Components\mrfi\mrfi_defs.h</Filename><XPos>0</XPos><YPos>87</YPos><SelStart>5388</SelStart><SelEnd>5388</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_dbgmcu.c</Filename><XPos>0</XPos><YPos>76</YPos><SelStart>2044</SelStart><SelEnd>2044</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\Components\bsp\boards\STM32\bsp_board.c</Filename><XPos>0</XPos><YPos>128</YPos><SelStart>4800</SelStart><SelEnd>4800</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Configuration\smpl_nwk_config.dat</Filename><XPos>0</XPos><YPos>37</YPos><SelStart>3083</SelStart><SelEnd>3083</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Configuration\Access_Point\smpl_config.dat</Filename><XPos>0</XPos><YPos>21</YPos><SelStart>2026</SelStart><SelEnd>2026</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\Components\bsp\boards\STM32\startup_stm32f10x_hd.s</Filename><XPos>0</XPos><YPos>124</YPos><SelStart>7060</SelStart><SelEnd>7060</SelEnd></Tab><ActiveTab>34</ActiveTab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Positions>
+      
+      
+      
+      
+      
+    <Top><Row0><Sizes><Toolbar-00704c88><key>iaridepm.enu1</key></Toolbar-00704c88></Sizes></Row0><Row1><Sizes><Toolbar-2f9c2cc0><key>debuggergui.enu1</key></Toolbar-2f9c2cc0></Sizes></Row1><Row2><Sizes><Toolbar-2f9c2bf8><key>armjlink.enu1</key></Toolbar-2f9c2bf8></Sizes></Row2></Top><Left><Row0><Sizes><Wnd4><Rect><Top>-2</Top><Left>-2</Left><Bottom>729</Bottom><Right>302</Right><x>-2</x><y>-2</y><xscreen>200</xscreen><yscreen>200</yscreen><sizeHorzCX>109230</sizeHorzCX><sizeHorzCY>195886</sizeHorzCY><sizeVertCX>166029</sizeVertCX><sizeVertCY>715965</sizeVertCY></Rect></Wnd4></Sizes></Row0></Left><Right><Row0><Sizes><Wnd7><Rect><Top>-2</Top><Left>-2</Left><Bottom>729</Bottom><Right>344</Right><x>-2</x><y>-2</y><xscreen>200</xscreen><yscreen>200</yscreen><sizeHorzCX>109230</sizeHorzCX><sizeHorzCY>195886</sizeHorzCY><sizeVertCX>188968</sizeVertCX><sizeVertCY>715965</sizeVertCY></Rect></Wnd7></Sizes></Row0><Row1><Sizes><Wnd6><Rect><Top>-2</Top><Left>342</Left><Bottom>729</Bottom><Right>673</Right><x>342</x><y>-2</y><xscreen>200</xscreen><yscreen>200</yscreen><sizeHorzCX>109230</sizeHorzCX><sizeHorzCY>195886</sizeHorzCY><sizeVertCX>180776</sizeVertCX><sizeVertCY>715965</sizeVertCY></Rect></Wnd6></Sizes></Row1></Right><Bottom><Row0><Sizes><Wnd5><Rect><Top>-2</Top><Left>-2</Left><Bottom>198</Bottom><Right>1833</Right><x>-2</x><y>-2</y><xscreen>1835</xscreen><yscreen>200</yscreen><sizeHorzCX>1002185</sizeHorzCX><sizeHorzCY>195886</sizeHorzCY><sizeVertCX>109230</sizeVertCX><sizeVertCY>195886</sizeVertCY></Rect></Wnd5></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+  </Desktop>
+</Project>
+
+

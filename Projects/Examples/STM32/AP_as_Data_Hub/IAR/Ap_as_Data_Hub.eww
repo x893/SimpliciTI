@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<workspace>
+  <project>
+    <path>$WS_DIR$\Ap_as_Data_Hub.ewp</path>
+  </project>
+  <batchBuild>
+    <batchDefinition>
+      <name>All Devices</name>
+      <member>
+        <project>Ap_as_Data_Hub</project>
+        <configuration>CC1100-LinkTo</configuration>
+      </member>
+      <member>
+        <project>Ap_as_Data_Hub</project>
+        <configuration>CC1100-LinkListen</configuration>
+      </member>
+      <member>
+        <project>Ap_as_Data_Hub</project>
+        <configuration>CC1101-Linkto</configuration>
+      </member>
+      <member>
+        <project>Ap_as_Data_Hub</project>
+        <configuration>CC1101-LinkListen</configuration>
+      </member>
+      <member>
+        <project>Ap_as_Data_Hub</project>
+        <configuration>CC1100E-LinkTo</configuration>
+      </member>
+      <member>
+        <project>Ap_as_Data_Hub</project>
+        <configuration>CC1100E-LinkListen</configuration>
+      </member>
+      <member>
+        <project>Ap_as_Data_Hub</project>
+        <configuration>CC2500-LinkTo</configuration>
+      </member>
+      <member>
+        <project>Ap_as_Data_Hub</project>
+        <configuration>CC2500-LinkListen</configuration>
+      </member>
+    </batchDefinition>
+    <batchDefinition>
+      <name>CC1100 Devices</name>
+      <member>
+        <project>Ap_as_Data_Hub</project>
+        <configuration>CC1100-LinkTo</configuration>
+      </member>
+      <member>
+        <project>Ap_as_Data_Hub</project>
+        <configuration>CC1100-LinkListen</configuration>
+      </member>
+    </batchDefinition>
+    <batchDefinition>
+      <name>CC1101 Devices</name>
+      <member>
+        <project>Ap_as_Data_Hub</project>
+        <configuration>CC1101-Linkto</configuration>
+      </member>
+      <member>
+        <project>Ap_as_Data_Hub</project>
+        <configuration>CC1101-LinkListen</configuration>
+      </member>
+    </batchDefinition>
+    <batchDefinition>
+      <name>CC1100E Devices</name>
+      <member>
+        <project>Ap_as_Data_Hub</project>
+        <configuration>CC1100E-LinkTo</configuration>
+      </member>
+      <member>
+        <project>Ap_as_Data_Hub</project>
+        <configuration>CC1100E-LinkListen</configuration>
+      </member>
+    </batchDefinition>
+    <batchDefinition>
+      <name>CC2500 Devices</name>
+      <member>
+        <project>Ap_as_Data_Hub</project>
+        <configuration>CC2500-LinkTo</configuration>
+      </member>
+      <member>
+        <project>Ap_as_Data_Hub</project>
+        <configuration>CC2500-LinkListen</configuration>
+      </member>
+    </batchDefinition>
+  </batchBuild>
+</workspace>
+
+
