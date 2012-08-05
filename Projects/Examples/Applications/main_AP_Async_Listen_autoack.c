@@ -1,3 +1,38 @@
+/*----------------------------------------------------------------------------
+ *  Demo Application for SimpliciTI
+ *
+ *  L. Friedman
+ *  Texas Instruments, Inc.
+ *----------------------------------------------------------------------------
+ */
+
+/**********************************************************************************************
+  Copyright 2007-2009 Texas Instruments Incorporated. All rights reserved.
+
+  IMPORTANT: Your use of this Software is limited to those specific rights granted under
+  the terms of a software license agreement between the user who downloaded the software,
+  his/her employer (which must be your employer) and Texas Instruments Incorporated (the
+  "License"). You may not use this Software unless you agree to abide by the terms of the
+  License. The License limits your use, and you acknowledge, that the Software may not be
+  modified, copied or distributed unless embedded on a Texas Instruments microcontroller
+  or used solely and exclusively in conjunction with a Texas Instruments radio frequency
+  transceiver, which is integrated into your product. Other than for the foregoing purpose,
+  you may not use, reproduce, copy, prepare derivative works of, modify, distribute,
+  perform, display or sell this Software and/or its documentation for any purpose.
+
+  YOU FURTHER ACKNOWLEDGE AND AGREE THAT THE SOFTWARE AND DOCUMENTATION ARE PROVIDED “AS IS”
+  WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION, ANY
+  WARRANTY OF MERCHANTABILITY, TITLE, NON-INFRINGEMENT AND FITNESS FOR A PARTICULAR PURPOSE.
+  IN NO EVENT SHALL TEXAS INSTRUMENTS OR ITS LICENSORS BE LIABLE OR OBLIGATED UNDER CONTRACT,
+  NEGLIGENCE, STRICT LIABILITY, CONTRIBUTION, BREACH OF WARRANTY, OR OTHER LEGAL EQUITABLE
+  THEORY ANY DIRECT OR INDIRECT DAMAGES OR EXPENSES INCLUDING BUT NOT LIMITED TO ANY
+  INCIDENTAL, SPECIAL, INDIRECT, PUNITIVE OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST
+  DATA, COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY
+  THIRD PARTIES (INCLUDING BUT NOT LIMITED TO ANY DEFENSE THEREOF), OR OTHER SIMILAR COSTS.
+
+  Should you have any questions regarding your right to use this Software,
+  contact Texas Instruments Incorporated at www.TI.com.
+**************************************************************************************************/
 #include <string.h>
 #include "bsp.h"
 #include "mrfi.h"
@@ -10,7 +45,7 @@
 #include "nwk_pll.h"
 
 #ifndef APP_AUTO_ACK
-	#error ERROR: Must define the macro APP_AUTO_ACK for this application.
+	#error "ERROR: Must define the macro APP_AUTO_ACK for this application."
 #endif
 
 void toggleLED(uint8_t);
@@ -76,15 +111,17 @@ static uint8_t sCB(linkID_t);
 static void processMessage(linkID_t, uint8_t *, uint8_t);
 
 /* Frequency Agility helper functions */
-static void    checkChangeChannel(void);
-static void    changeChannel(void);
+void    checkChangeChannel(void);
+void    changeChannel(void);
+void createRandomAddress(addr_t * lAddr);
 
 /* work loop semaphores */
 static volatile uint8_t sPeerFrameSem = 0;
 static volatile uint8_t sJoinSem = 0;
 
 #ifdef FREQUENCY_AGILITY
-	/*	************** BEGIN interference detection support	*/
+/*	************** BEGIN interference detection support	*/
+
 	#define INTERFERNCE_THRESHOLD_DBM (-70)
 	#define SSIZE    25
 	#define IN_A_ROW  3
@@ -95,7 +132,7 @@ static volatile uint8_t sJoinSem = 0;
 /* blink LEDs when channel changes... */
 static volatile uint8_t sBlinky = 0;
 
-	/*	************** END interference detection support	*/
+/*	************** END interference detection support	*/
 
 #define SPIN_ABOUT_A_QUARTER_SECOND   NWK_DELAY(250)
 
@@ -109,11 +146,31 @@ int main (void)
 
 	BSP_Init();
 
+	/* If an on-the-fly device address is generated it must be done before the
+	 * call to SMPL_Init(). If the address is set here the ROM value will not
+	 * be used. If SMPL_Init() runs before this IOCTL is used the IOCTL call
+	 * will not take effect. One shot only. The IOCTL call below is conformal.
+	 */
+#ifdef I_WANT_TO_CHANGE_DEFAULT_ROM_DEVICE_ADDRESS_PSEUDO_CODE
+	{
+		addr_t lAddr;
+
+		createRandomAddress(&lAddr);
+		SMPL_Ioctl(IOCTL_OBJ_ADDR, IOCTL_ACT_SET, &lAddr);
+	}
+#endif /* I_WANT_TO_CHANGE_DEFAULT_ROM_DEVICE_ADDRESS_PSEUDO_CODE */
+
 	SMPL_Init(sCB);
 
 	/* green and red LEDs on solid to indicate waiting for a Join. */
-	if (!BSP_LED2_IS_ON())	{	toggleLED(2);	}
-	if (!BSP_LED1_IS_ON())	{	toggleLED(1);	}
+	if (!BSP_LED2_IS_ON())
+	{
+		toggleLED(2);
+	}
+	if (!BSP_LED1_IS_ON())
+	{
+		toggleLED(1);
+	}
 
 	/* main work loop */
 	while (1)
@@ -135,9 +192,12 @@ int main (void)
 			while (1)
 			{
 				if (SMPL_SUCCESS == SMPL_LinkListen(&sLID[sNumCurrentPeers]))
+        {
 					break;
+        }
 				/* Implement fail-to-link policy here. otherwise, listen again. */
 			}
+
 			sNumCurrentPeers++;
 
 			BSP_ENTER_CRITICAL_SECTION(intState);
@@ -174,7 +234,6 @@ int main (void)
 		{
 			checkChangeChannel();
 		}
-
 		BSP_ENTER_CRITICAL_SECTION(intState);
 		if (sBlinky)
 		{
@@ -187,12 +246,21 @@ int main (void)
 		}
 		BSP_EXIT_CRITICAL_SECTION(intState);
 	}
+
 }
 
 void toggleLED(uint8_t which)
 {
-	if (1 == which)			{	BSP_TOGGLE_LED1();	}
-	else if (2 == which)	{	BSP_TOGGLE_LED2();	}
+	if (1 == which)
+	{
+		BSP_TOGGLE_LED1();
+	}
+	else if (2 == which)
+	{
+		BSP_TOGGLE_LED2();
+	}
+
+	return;
 }
 
 /* Runs in ISR context. Reading the frame should be done in the */
@@ -208,16 +276,23 @@ static uint8_t sCB(linkID_t lid)
 	{
 		sJoinSem++;
 	}
+
 	/* leave frame to be read by application. */
 	return 0;
 }
 
 static void processMessage(linkID_t lid, uint8_t *msg, uint8_t len)
 {
-	DEBUG_PRINT("LID:%d Packet:%d bytes\n", lid, len);
+	DEBUG("LID:");
+	DEBUG_DEC(lid);
+	DEBUG(" Packet:");
+	DEBUG_DEC( len);
+	DEBUG_LN("  bytes\r\n");
 	/* do something useful */
 	if (len)
+  {
 		toggleLED(*msg);
+  }
 	return;
 }
 
@@ -227,16 +302,17 @@ static void changeChannel(void)
 	freqEntry_t freq;
 
 	if (++sChannel >= NWK_FREQ_TBL_SIZE)
+	{
 		sChannel = 0;
-
-	DEBUG_PRINT("Channel %d\n", sChannel);
-
+		DEBUG_PRINT("Channel %d\n", sChannel);
+	}
 	freq.logicalChan = sChannel;
 	SMPL_Ioctl(IOCTL_OBJ_FREQ, IOCTL_ACT_SET, &freq);
 	BSP_TURN_OFF_LED1();
 	BSP_TURN_OFF_LED2();
 	sBlinky = 1;
 #endif
+	return;
 }
 
 /* implement auto-channel-change policy here... */
@@ -244,6 +320,7 @@ static void  checkChangeChannel(void)
 {
 #ifdef FREQUENCY_AGILITY
 	int8_t dbm, inARow = 0;
+
 	uint8_t i;
 
 	memset(sSample, 0x0, SSIZE);
@@ -251,7 +328,9 @@ static void  checkChangeChannel(void)
 	{
 		/* quit if we need to service an app frame */
 		if (sPeerFrameSem || sJoinSem)
+    {
 			return;
+    }
 		NWK_DELAY(1);
 		SMPL_Ioctl(IOCTL_OBJ_RADIO, IOCTL_ACT_RADIO_RSSI, (void *)&dbm);
 		sSample[i] = dbm;
@@ -265,7 +344,10 @@ static void  checkChangeChannel(void)
 			}
 		}
 		else
+		{
 			inARow = 0;
+		}
 	}
 #endif
+	return;
 }

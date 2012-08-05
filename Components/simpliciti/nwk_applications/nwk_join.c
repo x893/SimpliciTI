@@ -151,6 +151,7 @@ void nwk_setJoinToken(uint32_t token)
 	{
 		sJoinToken = token;
 	}
+
 	return;
 }
 
@@ -173,6 +174,7 @@ void nwk_getJoinToken(uint32_t *pToken)
 	{
 		*pToken = sJoinToken;
 	}
+
 	return;
 }
 
@@ -493,9 +495,9 @@ smplStatus_t nwk_join(void)
 		{
 			uint8_t firstByte = msg[JB_REQ_OS] & (~NWK_APP_REPLY_BIT);
 
-		/* Sanity check for correct reply frame. Older version
-		 * has the length instead of the request as the first byte.
-		 */
+			/* Sanity check for correct reply frame. Older version
+			 * has the length instead of the request as the first byte.
+			 */
 			if ((firstByte == JOIN_REQ_JOIN) ||
 				(firstByte == JOIN_REPLY_LEGACY_MSG_LENGTH)
 			)
@@ -515,7 +517,9 @@ smplStatus_t nwk_join(void)
 		}
 		/* TODO: process encryption stuff */
 	}
+
 	return rc;
+
 }
 
 #endif /* ACCESS_POINT */

@@ -45,25 +45,27 @@
  * ------------------------------------------------------------------------------------------------
  */
 #if (defined MRFI_CC1100)
-#include "smartrf/CC1100/smartrf_CC1100.h"
+	#include "smartrf/CC1100/smartrf_CC1100.h"
 #elif (defined MRFI_CC1101)
-#include "smartrf/CC1101/smartrf_CC1101.h"
+	#include "smartrf/CC1101/smartrf_CC1101.h"
+#elif (defined MRFI_CC110L)
+	#include "smartrf/CC110L/smartrf_CC110L.h"
 #elif (defined MRFI_CC2500)
-#include "smartrf/CC2500/smartrf_CC2500.h"
+	#include "smartrf/CC2500/smartrf_CC2500.h"
 #elif (defined MRFI_CC1110)
-#include "smartrf/CC1110/smartrf_CC1110.h"
+	#include "smartrf/CC1110/smartrf_CC1110.h"
 #elif (defined MRFI_CC1111)
-#include "smartrf/CC1111/smartrf_CC1111.h"
+	#include "smartrf/CC1111/smartrf_CC1111.h"
 #elif (defined MRFI_CC2510)
-#include "smartrf/CC2510/smartrf_CC2510.h"
+	#include "smartrf/CC2510/smartrf_CC2510.h"
 #elif (defined MRFI_CC2511)
-#include "smartrf/CC2511/smartrf_CC2511.h"
+	#include "smartrf/CC2511/smartrf_CC2511.h"
 #elif (defined MRFI_CC1100E_470)
-#include "smartrf/CC1100E/470/smartrf_CC1100E.h"
+	#include "smartrf/CC1100E/470/smartrf_CC1100E.h"
 #elif (defined MRFI_CC1100E_950)
-#include "smartrf/CC1100E/950/smartrf_CC1100E.h"
+	#include "smartrf/CC1100E/950/smartrf_CC1100E.h"
 #else
-#error "ERROR: A valid radio is not specified."
+	#error "ERROR: A valid radio is not specified."
 #endif
 
 

@@ -16,31 +16,31 @@
  * ------------------------------------------------------------------------------------------------
  */
 extern void MRFI_GpioIsr(void);
+uint8_t mrfi_ignore_interrupt = 0;
 
 /**************************************************************************************************
- * @fn          createRandomAddress
+ * @fn          GDO0 Interrupt handler
  **************************************************************************************************
  */
-void createRandomAddress(addr_t * lAddr)
+BSP_ISR_FUNCTION( MRFI_GDO0_INT_HANDLER, MRFI_GDO0_INT_VECTOR )
 {
-	uint32_t dev_id = DBGMCU_GetDEVID();
-	uint32_t rev_id = DBGMCU_GetREVID();
-	SMPL_Ioctl(IOCTL_OBJ_ADDR, IOCTL_ACT_GET, lAddr);
-	lAddr->addr[NET_ADDR_SIZE - 1] = dev_id & 0x00FF;
-	lAddr->addr[NET_ADDR_SIZE - 2] = (lAddr->addr[NET_ADDR_SIZE - 2] & 0xF0) | ((dev_id & 0x0F00) >> 8);
-}
-
-/**************************************************************************************************
- * @fn          MRFI_GpioPort1Isr
- **************************************************************************************************
- */
-void MRFI_GDO0_INT_VECTOR(void);
-BSP_ISR_FUNCTION( BSP_GpioPort1Isr, MRFI_GDO0_INT_VECTOR )
-{
-	/* This ISR is easily replaced.  The new ISR must simply
-	 * include the following function call.
-	 */
-	MRFI_GpioIsr();
+	if (mrfi_ignore_interrupt)
+	{
+		if (MRFI_SYNC_PIN_INT_IS_ENABLED() && MRFI_SYNC_PIN_INT_FLAG_IS_SET())
+		{
+			MRFI_CLEAR_SYNC_PIN_INT_FLAG();
+			MRFI_GDO0_INT_DISABLE();
+			mrfi_ignore_interrupt = 0;
+		}
+	}
+	else
+	{
+		/* This ISR is easily replaced.  The new ISR must simply
+		 * include the following function call.
+		 */
+		DEBUG_LN("-- INT --");
+		MRFI_GpioIsr();
+	}
 }
 
 /**************************************************************************************************
@@ -73,7 +73,7 @@ uint16_t MRFI_SPI_CSN_IS_HIGH(void)
 uint8_t __mrfi_SPI_READ_BYTE(void)
 {
 	// Wait for data ready
-	while ((__mrfi_SPI_PORT__->SR & SPI_I2S_FLAG_RXNE) == RESET);
+	while (!(__mrfi_SPI_PORT__->SR & SPI_I2S_FLAG_RXNE));
 	return (uint8_t)(__mrfi_SPI_PORT__->DR);
 }
 
@@ -90,7 +90,15 @@ void __mrfi_SPI_WRITE_BYTE(uint8_t data)
 	__mrfi_SPI_PORT__->DR = data;
 }
 
-/**************************************************************************************************
+/*
+ * @fn	Check for SPI initialized
+ */
+uint8_t __mrfi_SPI_IS_INITIALIZED(void)
+{
+	return (__mrfi_SPI_PORT__->CR1 & SPI_CR1_SPE) ? 1 : 0;
+}
+
+/*
  * @fn	Wait for SPI complete operation (not a BUSY)
  */
 void __mrfi_SPI_WAIT_DONE(void)
@@ -98,16 +106,19 @@ void __mrfi_SPI_WAIT_DONE(void)
 	while (__mrfi_SPI_PORT__->SR & SPI_I2S_FLAG_BSY);
 }
 
-void __mrfi_GDO0_FALLING_EDGE_INT(void)
+/*
+ * @fn	Wait for SPI complete operation (not a BUSY)
+ */
+void __mrfi_GDO0_INIT(void)
 {
 	EXTI_InitTypeDef   EXTI_InitStructure;
 	NVIC_InitTypeDef   NVIC_InitStructure;
-		
+
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
 
 	/* Set Falling edge */
 	/* Connect EXTI7 Line to PB7 pin */
-	GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource7);
+	GPIO_EXTILineConfig(__mrfi_GDO0_EXTI_PORT, __mrfi_GDO0_EXTI_PIN);
 
 	/* Configure EXTI7 line */
 	EXTI_InitStructure.EXTI_Line = __mrfi_GDO0_EXTI_LINE;
@@ -115,30 +126,39 @@ void __mrfi_GDO0_FALLING_EDGE_INT(void)
 	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
 	EXTI_InitStructure.EXTI_LineCmd = ENABLE;
 	EXTI_Init(&EXTI_InitStructure);
+	MRFI_GDO0_INT_DISABLE();
 
-	/* Enable and set EXTI9_5 Interrupt to lowest priority */
+	/* Enable and set EXTI9_5 Interrupt to highest priority */
 	NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x0F;
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x0F;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x0;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x1;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
 }
 
-void __mrfi_ENABLE_GDO0_INT(void)
+/**************************************************************************************************
+ * @fn          createRandomAddress
+ **************************************************************************************************
+ */
+void createRandomAddress(addr_t * lAddr)
 {
-	EXTI_InitTypeDef   EXTI_InitStructure;
-	EXTI_InitStructure.EXTI_Line = __mrfi_GDO0_EXTI_LINE;
-	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
-	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
-	EXTI_InitStructure.EXTI_LineCmd = ENABLE;
-	EXTI_Init(&EXTI_InitStructure);
-}
+	uint16_t * id = (uint16_t *)0x1FFFF7E8;
+	uint16_t unique_id;
 
-void __mrfi_DISABLE_GDO0_INT(void)
-{
-	EXTI_InitTypeDef   EXTI_InitStructure;
-	EXTI_InitStructure.EXTI_Line = __mrfi_GDO0_EXTI_LINE;
-	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
-	EXTI_InitStructure.EXTI_LineCmd = DISABLE;
-	EXTI_Init(&EXTI_InitStructure);
+	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_CRC, ENABLE);
+
+	CRC_ResetDR();
+	CRC_CalcCRC(*id++);
+	CRC_CalcCRC(*id++);
+	CRC_CalcCRC(*id++);
+	CRC_CalcCRC(*id++);
+	CRC_CalcCRC(*id++);
+	CRC_CalcCRC(*id++);
+	unique_id = (uint16_t)CRC_GetCRC();
+
+	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_CRC, DISABLE);
+
+	SMPL_Ioctl(IOCTL_OBJ_ADDR, IOCTL_ACT_GET, lAddr);
+	lAddr->addr[NET_ADDR_SIZE - 1] = (unique_id & 0x00FF);
+	lAddr->addr[NET_ADDR_SIZE - 2] = (unique_id & 0xFF00) >> 8;
 }

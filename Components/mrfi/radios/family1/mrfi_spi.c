@@ -43,6 +43,7 @@
 #include "bsp_external/mrfi_board_defs.h"
 #include "mrfi_spi.h"
 
+
 /* ------------------------------------------------------------------------------------------------
  *                                            Defines
  * ------------------------------------------------------------------------------------------------
@@ -51,6 +52,7 @@
 
 #define READ_BIT                    0x80
 #define BURST_BIT                   0x40
+
 
 /* ------------------------------------------------------------------------------------------------
  *                                            Macros
@@ -61,12 +63,12 @@
 #define MRFI_SPI_CHIP_SELECT_IS_OFF()         MRFI_SPI_CSN_IS_HIGH()
 
 #define MRFI_SPI_DEBUG
-
 #ifdef MRFI_SPI_DEBUG
 	#define MRFI_SPI_ASSERT(x)	BSP_ASSERT(x)
 #else
 	#define MRFI_SPI_ASSERT(x)
 #endif
+
 
 /* ------------------------------------------------------------------------------------------------
  *                                       Local Prototypes
@@ -106,8 +108,97 @@ void mrfiSpiInit(void)
   
 	/* initialize the SPI registers */
 	MRFI_SPI_INIT();
-} 
+}
 
+#ifdef DEBUG_SPI
+const char* spiRegs[] =
+{
+	"IOCFG2",
+	"IOCFG1",
+	"IOCFG0",
+	"FIFOTHR",
+	"SYNC1",
+	"SYNC0",
+	"PKTLEN",
+	"PKTCTRL1",
+	"PKTCTRL0",
+	"ADDR",
+	"CHANNR",
+	"FSCTRL1",
+	"FSCTRL0",
+	"FREQ2",
+	"FREQ1",
+	"FREQ0",
+	"MDMCFG4",
+	"MDMCFG3",
+	"MDMCFG2",
+	"MDMCFG1",
+	"MDMCFG0",
+	"DEVIATN",
+	"MCSM2",
+	"MCSM1",
+	"MCSM0",
+	"FOCCFG",
+	"BSCFG",
+	"AGCCTRL2",
+	"AGCCTRL1",
+	"AGCCTRL0",
+	"WOREVT1",
+	"WOREVT0",
+	"WORCTRL",
+	"FREND1",
+	"FREND0",
+	"FSCAL3",
+	"FSCAL2",
+	"FSCAL1",
+	"FSCAL0",
+	"RCCTRL1",
+	"RCCTRL0",
+	"FSTEST",
+	"PTEST",
+	"AGCTEST",
+	"TEST2",
+	"TEST1",
+	"TEST0",
+	"?2F",
+/* status registers */
+	"PARTNUM",
+	"VERSION",
+	"FREQEST",
+	"LQI",
+	"RSSI",
+	"MARCSTATE",
+	"WORTIME1",
+	"WORTIME0",
+	"PKTSTATUS",
+	"VCO_VC_DAC",
+	"TXBYTES",
+	"RXBYTES",
+	"?3C",
+	"?3D",
+/* burst write registers */
+	"PA_TABLE0",
+	"TXFIFO",
+	"RXFIFO"
+};
+const char* cmdRegs[] =
+{
+	"SRES",
+	"SFSTXON",
+	"SXOFF",
+	"SCAL",
+	"SRX",
+	"STX",
+	"SIDLE",
+	"SRSVD",
+	"SWOR",
+	"SPWD",
+	"SFRX",
+	"SFTX",
+	"SWORRST",
+	"SNOP"
+};
+#endif
 
 /**************************************************************************************************
  * @fn          mrfiSpiCmdStrobe
@@ -124,6 +215,10 @@ uint8_t mrfiSpiCmdStrobe(uint8_t addr)
 {
 	uint8_t statusByte;
 	mrfiSpiIState_t s;
+
+#ifdef DEBUG_SPI
+	DEBUG_LN(cmdRegs[addr-SRES]);
+#endif
 
 #ifdef MRFI_TIMER_ALWAYS_ACTIVE
 	bool comm_state = sActiveSPI; // save comm state
@@ -175,13 +270,22 @@ uint8_t mrfiSpiCmdStrobe(uint8_t addr)
  */
 uint8_t mrfiSpiReadReg(uint8_t addr)
 {
+	uint8_t data;
 	MRFI_SPI_ASSERT(addr <= 0x3B);    /* invalid address */
-  
+
 	/*
 	 *  The burst bit is set to allow access to read-only status registers.
 	 *  This does not affect normal register reads.
 	 */
-	return( spiRegAccess(addr | BURST_BIT | READ_BIT, DUMMY_BYTE) );
+	data = spiRegAccess(addr | BURST_BIT | READ_BIT, DUMMY_BYTE);
+
+#ifdef DEBUG_SPI
+	DEBUG(spiRegs[addr]);
+	DEBUG(" ");
+	DEBUG_HEX_LN(data);
+#endif
+
+	return data;
 }
 
 
@@ -199,6 +303,13 @@ uint8_t mrfiSpiReadReg(uint8_t addr)
 void mrfiSpiWriteReg(uint8_t addr, uint8_t value)
 {
 	MRFI_SPI_ASSERT((addr <= 0x2E) || (addr == 0x3E));    /* invalid address */
+
+#ifdef DEBUG_SPI
+	DEBUG(spiRegs[addr]);
+	DEBUG("=");
+	DEBUG_HEX_LN(value);
+#endif
+
 	spiRegAccess(addr, value);
 }
 
@@ -267,6 +378,7 @@ static uint8_t spiRegAccess(uint8_t addrByte, uint8_t writeValue)
 	return(readValue);
 }
 
+
 /**************************************************************************************************
  * @fn          mrfiSpiWriteTxFifo
  *
@@ -280,6 +392,17 @@ static uint8_t spiRegAccess(uint8_t addrByte, uint8_t writeValue)
  */
 bool mrfiSpiWriteTxFifo(uint8_t * pData, uint8_t len)
 {
+#ifdef DEBUG_SPI
+	uint8_t len2 = len;
+	uint8_t * p = pData;
+	DEBUG("TX:");
+	while(len2-- != 0)
+	{
+		DEBUG(" ");
+		DEBUG_HEX(*p++);
+	}
+	DEBUG_LN("");
+#endif
 	return spiBurstFifoAccess(TXFIFO | BURST_BIT, pData, len);
 }
 
@@ -297,7 +420,17 @@ bool mrfiSpiWriteTxFifo(uint8_t * pData, uint8_t len)
  */
 bool mrfiSpiReadRxFifo(uint8_t * pData, uint8_t len)
 {
-	return spiBurstFifoAccess(RXFIFO | BURST_BIT | READ_BIT, pData, len);
+	bool result = spiBurstFifoAccess(RXFIFO | BURST_BIT | READ_BIT, pData, len);
+#ifdef DEBUG_SPI
+	DEBUG("RX:");
+	while(len-- != 0)
+	{
+		DEBUG(" ");
+		DEBUG_HEX(*pData++);
+	}
+	DEBUG_LN("");
+#endif
+	return result;
 }
 
 
@@ -417,6 +550,7 @@ static bool spiBurstFifoAccess(uint8_t addrByte, uint8_t * pData, uint8_t len)
   
 	return result;
 }
+
 
 /**************************************************************************************************
 */

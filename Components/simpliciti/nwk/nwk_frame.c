@@ -69,16 +69,16 @@
 #if SIZE_INFRAME_Q > 0
 /* array of function pointers to handle NWK application frames */
 static  fhStatus_t (* const func[])(mrfiPacket_t *) = { nwk_processPing,
-                                                        nwk_processLink,
-                                                        nwk_processJoin,
-                                                        nwk_processSecurity,
-                                                        nwk_processFreq,
-                                                        nwk_processMgmt
-#ifdef NWK_PLL
-                                                          ,
+														nwk_processLink,
+														nwk_processJoin,
+														nwk_processSecurity,
+														nwk_processFreq,
+														nwk_processMgmt
+												#ifdef NWK_PLL
+														,
                                                         nwk_processPLL
-#endif
-                                                      };
+												#endif
+														};
 #endif  /* SIZE_INFRAME_Q > 0 */
 
 static uint8_t sTRACTID = 0;
@@ -96,14 +96,14 @@ static uint8_t  (*spCallback)(linkID_t) = NULL;
  */
 
 #if SIZE_INFRAME_Q > 0
-/* local helper functions for Rx devices */
-static void  dispatchFrame(frameInfo_t *);
-#if !defined(END_DEVICE)
-#if defined(ACCESS_POINT)
-/* only Access Points need to worry about duplicate S&F frames */
-uint8_t  isDupSandFFrame(mrfiPacket_t *);
-#endif /* ACCESS_POINT */
-#endif  /* !END_DEVICE */
+	/* local helper functions for Rx devices */
+	static void  dispatchFrame(frameInfo_t *);
+	#if !defined(END_DEVICE)
+		#if defined(ACCESS_POINT)
+			/* only Access Points need to worry about duplicate S&F frames */
+			uint8_t  isDupSandFFrame(mrfiPacket_t *);
+		#endif /* ACCESS_POINT */
+	#endif  /* !END_DEVICE */
 #endif  /* SIZE_INFRAME_Q > 0 */
 
 /******************************************************************************
@@ -156,8 +156,11 @@ void nwk_frameInit(uint8_t (*pF)(linkID_t))
 #else
 	(void) pF;
 #endif
+
 	sMyAddr = nwk_getMyAddress();
+
 	while ((sTRACTID = MRFI_RandomByte()) == 0) ;
+
 	return;
 }
 
@@ -276,8 +279,10 @@ void MRFI_RxCompleteISR()
 	if ((fInfoPtr = nwk_QfindSlot(INQ)) != NULL)
 	{
 		MRFI_Receive(&fInfoPtr->mrfiPkt);
+
 		dispatchFrame(fInfoPtr);
 	}
+
 	return;
 }
 
@@ -418,214 +423,214 @@ smplStatus_t nwk_retrieveFrame(rcvContext_t *rcv, uint8_t *msg, uint8_t *len, ad
  */
 static void dispatchFrame(frameInfo_t *fiPtr)
 {
-  uint8_t     port       = GET_FROM_FRAME(MRFI_P_PAYLOAD(&fiPtr->mrfiPkt), F_PORT_OS);
-  uint8_t     nwkAppSize = sizeof(func)/sizeof(func[0]);
-  fhStatus_t  rc;
-  linkID_t    lid;
+	uint8_t     port       = GET_FROM_FRAME(MRFI_P_PAYLOAD(&fiPtr->mrfiPkt), F_PORT_OS);
+	uint8_t     nwkAppSize = sizeof(func)/sizeof(func[0]);
+	fhStatus_t  rc;
+	linkID_t    lid;
 #if defined(ACCESS_POINT)
-  uint8_t loc;
+	uint8_t loc;
 #endif
 #if !defined(END_DEVICE)
-  uint8_t isForMe;
+	uint8_t isForMe;
 #endif
 
-  /* be sure it's not an echo... */
-  if (!memcmp(MRFI_P_SRC_ADDR(&fiPtr->mrfiPkt), sMyAddr, NET_ADDR_SIZE))
-  {
-    fiPtr->fi_usage = FI_AVAILABLE;
-    return;
-  }
+	/* be sure it's not an echo... */
+	if (!memcmp(MRFI_P_SRC_ADDR(&fiPtr->mrfiPkt), sMyAddr, NET_ADDR_SIZE))
+	{
+		fiPtr->fi_usage = FI_AVAILABLE;
+		return;
+	}
 
-  /* Make sure encyrption bit conforms to our security support context. */
+	/* Make sure encyrption bit conforms to our security support context. */
 #if defined(SMPL_SECURE)
-  if (!(GET_FROM_FRAME(MRFI_P_PAYLOAD(&fiPtr->mrfiPkt), F_ENCRYPT_OS)))
-  {
-    /* Encyrption bit is not on when when it should be */
-    fiPtr->fi_usage = FI_AVAILABLE;
-    return;
-  }
+	if (!(GET_FROM_FRAME(MRFI_P_PAYLOAD(&fiPtr->mrfiPkt), F_ENCRYPT_OS)))
+	{
+		/* Encyrption bit is not on when when it should be */
+		fiPtr->fi_usage = FI_AVAILABLE;
+		return;
+	}
 #else
-  if (GET_FROM_FRAME(MRFI_P_PAYLOAD(&fiPtr->mrfiPkt), F_ENCRYPT_OS))
-  {
-    /* Encyrption bit is on when when it should not be */
-    fiPtr->fi_usage = FI_AVAILABLE;
-    return;
-  }
+	if (GET_FROM_FRAME(MRFI_P_PAYLOAD(&fiPtr->mrfiPkt), F_ENCRYPT_OS))
+	{
+		/* Encyrption bit is on when when it should not be */
+		fiPtr->fi_usage = FI_AVAILABLE;
+		return;
+	}
 #endif  /* SMPL_SECURE */
 
-  /* If it's a network application port dispatch to service routine. Dispose
-   * of frame depending on return code.
-   */
-  if (port && (port <= nwkAppSize))
-  {
+	/* If it's a network application port dispatch to service routine. Dispose
+	 * of frame depending on return code.
+	 */
+	if (port && (port <= nwkAppSize))
+	{
 #if defined(SMPL_SECURE)
-    /* Non-connection-based frame. We can decode here if it was encrypted */
-    if (!nwk_getSecureFrame(&fiPtr->mrfiPkt, MRFI_GET_PAYLOAD_LEN(&fiPtr->mrfiPkt) - F_SEC_CTR_OS, 0))
-    {
-      fiPtr->fi_usage = FI_AVAILABLE;
-      return;
-    }
+		/* Non-connection-based frame. We can decode here if it was encrypted */
+		if (!nwk_getSecureFrame(&fiPtr->mrfiPkt, MRFI_GET_PAYLOAD_LEN(&fiPtr->mrfiPkt) - F_SEC_CTR_OS, 0))
+		{
+			fiPtr->fi_usage = FI_AVAILABLE;
+			return;
+		}
 #endif
-    rc = func[port-1](&fiPtr->mrfiPkt);
-    if (FHS_KEEP == rc)
-    {
-      fiPtr->fi_usage = FI_INUSE_UNTIL_DEL;
-    }
+		rc = func[port-1](&fiPtr->mrfiPkt);
+		if (FHS_KEEP == rc)
+		{
+			fiPtr->fi_usage = FI_INUSE_UNTIL_DEL;
+		}
 #if !defined(END_DEVICE)
-    else if (FHS_REPLAY == rc)
-    {
-      /* an AP or an RE could be relaying a NWK application frame... */
-      nwk_replayFrame(fiPtr);
-    }
+		else if (FHS_REPLAY == rc)
+		{
+			/* an AP or an RE could be relaying a NWK application frame... */
+			nwk_replayFrame(fiPtr);
+		}
 #endif
-    else  /* rc == FHS_RELEASE (default...) */
-    {
-      fiPtr->fi_usage = FI_AVAILABLE;
-    }
-    return;
-  }
-  /* sanity check */
-  else if ((port != SMPL_PORT_USER_BCAST) && ((port < PORT_BASE_NUMBER) || (port > SMPL_PORT_STATIC_MAX)))
-  {
-    /* bogus port. drop frame */
-    fiPtr->fi_usage = FI_AVAILABLE;
-    return;
-  }
+		else  /* rc == FHS_RELEASE (default...) */
+		{
+			fiPtr->fi_usage = FI_AVAILABLE;
+		}
+		return;
+	}
+	/* sanity check */
+	else if ((port != SMPL_PORT_USER_BCAST) && ((port < PORT_BASE_NUMBER) || (port > SMPL_PORT_STATIC_MAX)))
+	{
+		/* bogus port. drop frame */
+		fiPtr->fi_usage = FI_AVAILABLE;
+		return;
+	}
 
-  /* At this point we know the target is a user app. If this is an end device
-   * and we got this far save the frame and we're done. If we're an AP there
-   * are 3 cases: it's for us, it's for s store-and-forward client, or we need
-   * to replay the frame. If we're and RE and the frame didn't come from an RE
-   * and it's not for us, replay the frame.
-   */
+	/* At this point we know the target is a user app. If this is an end device
+	 * and we got this far save the frame and we're done. If we're an AP there
+	 * are 3 cases: it's for us, it's for s store-and-forward client, or we need
+	 * to replay the frame. If we're and RE and the frame didn't come from an RE
+	 * and it's not for us, replay the frame.
+	 */
 
 #if defined(END_DEVICE)
-  /* If we're s polling end device we only accept application frames from
-   * the AP. This prevents duplicate reception if we happen to be on when
-   * a linked peer sends.
-   */
-#if defined(RX_POLLS)
-  if (F_TX_DEVICE_ED != GET_FROM_FRAME(MRFI_P_PAYLOAD(&fiPtr->mrfiPkt), F_TX_DEVICE))
-  {
-    if (nwk_isConnectionValid(&fiPtr->mrfiPkt, &lid))
-    {
-      fiPtr->fi_usage = FI_INUSE_UNTIL_DEL;
-    }
-    else
-    {
-      fiPtr->fi_usage = FI_AVAILABLE;
-    }
-  }
-  else
-  {
-    fiPtr->fi_usage = FI_AVAILABLE;
-  }
-#else
-  /* it's destined for a user app. */
-  if (nwk_isConnectionValid(&fiPtr->mrfiPkt, &lid))
-  {
-    fiPtr->fi_usage = FI_INUSE_UNTIL_DEL;
-    if (spCallback && spCallback(lid))
-    {
-      fiPtr->fi_usage = FI_AVAILABLE;
-      return;
-    }
-  }
-  else
-  {
-    fiPtr->fi_usage = FI_AVAILABLE;
-  }
-#endif  /* RX_POLLS */
+	/* If we're s polling end device we only accept application frames from
+	 * the AP. This prevents duplicate reception if we happen to be on when
+	 * a linked peer sends.
+	 */
+  #if defined(RX_POLLS)
+	if (F_TX_DEVICE_ED != GET_FROM_FRAME(MRFI_P_PAYLOAD(&fiPtr->mrfiPkt), F_TX_DEVICE))
+	{
+		if (nwk_isConnectionValid(&fiPtr->mrfiPkt, &lid))
+		{
+			fiPtr->fi_usage = FI_INUSE_UNTIL_DEL;
+		}
+		else
+		{
+			fiPtr->fi_usage = FI_AVAILABLE;
+		}
+	}
+	else
+	{
+		fiPtr->fi_usage = FI_AVAILABLE;
+	}
+  #else
+	/* it's destined for a user app. */
+	if (nwk_isConnectionValid(&fiPtr->mrfiPkt, &lid))
+	{
+		fiPtr->fi_usage = FI_INUSE_UNTIL_DEL;
+		if (spCallback && spCallback(lid))
+		{
+			fiPtr->fi_usage = FI_AVAILABLE;
+			return;
+		}
+	}
+	else
+	{
+		fiPtr->fi_usage = FI_AVAILABLE;
+	}
+  #endif  /* RX_POLLS */
 
 #else   /* END_DEVICE */
 
-  /* We have an issue if the frame is broadcast to the UUD port. The AP (or RE) must
-   * handle this frame as if it were the target in case there is an application
-   * running that is listening on that port. But if it's a broadcast it must also be
-   * replayed. It isn't enough just to test for the UUD port because it could be a
-   * directed frame to another device. We must check explicitly for broadcast
-   * destination address.
-   */
-  isForMe = !memcmp(sMyAddr, MRFI_P_DST_ADDR(&fiPtr->mrfiPkt), NET_ADDR_SIZE);
-  if (isForMe || ((port == SMPL_PORT_USER_BCAST) && !memcmp(nwk_getBCastAddress(), MRFI_P_DST_ADDR(&fiPtr->mrfiPkt), NET_ADDR_SIZE)))
-  {
-    /* The folllowing test will succeed for the UUD port regardless of the
-     * source address.
-     */
-    if (nwk_isConnectionValid(&fiPtr->mrfiPkt, &lid))
-    {
-      /* If this is for the UUD port and we are here then the device is either
-       * an AP or an RE. In either case it must replay the UUD port frame if the
-       * frame is not "for me". But it also must handle it since it could have a
-       * UUD-listening application. Do the reply first and let the subsequent code
-       * correctly set the frame usage state. Note that the routine return can be
-       * from this code block. If not it will drop through to the bottom without
-       * doing a replay.
-       */
-      /* Do I need to replay it? */
-      if (!isForMe)
-      {
-        /* must be a broadcast for the UUD port */
-        nwk_replayFrame(fiPtr);
-      }
-      /* OK. Now I handle it... */
-      fiPtr->fi_usage = FI_INUSE_UNTIL_DEL;
-      if (spCallback && spCallback(lid))
-      {
-        fiPtr->fi_usage = FI_AVAILABLE;
-        return;
-      }
-    }
-    else
-    {
-      fiPtr->fi_usage = FI_AVAILABLE;
-    }
-  }
-#if defined( ACCESS_POINT )
-  /* Check to see if we need to save this for a S and F client. Otherwise,
-   * if it's not for us, get rid of it.
-   */
-  else if (nwk_isSandFClient(MRFI_P_DST_ADDR(&fiPtr->mrfiPkt), &loc))
-  {
-    /* Don't bother if it is a duplicate frame or if it's a forwarded frame
-     * echoed back from an RE.
-     */
-    if (!isDupSandFFrame(&fiPtr->mrfiPkt) &&
-        !(GET_FROM_FRAME(MRFI_P_PAYLOAD(&fiPtr->mrfiPkt), F_FWD_FRAME))
-       )
-    {
-#if defined(APP_AUTO_ACK)
-      /* Make sure ack request bit is off. Sender will have gone away. */
-      PUT_INTO_FRAME(MRFI_P_PAYLOAD(&fiPtr->mrfiPkt), F_ACK_REQ, 0);
-#endif
-      fiPtr->fi_usage = FI_INUSE_UNTIL_FWD;
-    }
-    else
-    {
-      fiPtr->fi_usage = FI_AVAILABLE;
-    }
-  }
-  else if (GET_FROM_FRAME(MRFI_P_PAYLOAD(&fiPtr->mrfiPkt), F_TX_DEVICE) == F_TX_DEVICE_AP)
-  {
-    /* I'm an AP and this frame came from an AP. Don't replay. */
-    fiPtr->fi_usage = FI_AVAILABLE;
-  }
-#elif defined( RANGE_EXTENDER )
-  else if (GET_FROM_FRAME(MRFI_P_PAYLOAD(&fiPtr->mrfiPkt), F_TX_DEVICE) == F_TX_DEVICE_RE)
-  {
-    /* I'm an RE and this frame came from an RE. Don't replay. */
-    fiPtr->fi_usage = FI_AVAILABLE;
-  }
-#endif
-  else
-  {
-    /* It's not for me and I'm either an AP or I'm an RE and the frame
-     * didn't come from an RE. Replay the frame.
-     */
-    nwk_replayFrame(fiPtr);
-  }
+	/* We have an issue if the frame is broadcast to the UUD port. The AP (or RE) must
+	 * handle this frame as if it were the target in case there is an application
+	 * running that is listening on that port. But if it's a broadcast it must also be
+	 * replayed. It isn't enough just to test for the UUD port because it could be a
+	 * directed frame to another device. We must check explicitly for broadcast
+	 * destination address.
+	 */
+	isForMe = !memcmp(sMyAddr, MRFI_P_DST_ADDR(&fiPtr->mrfiPkt), NET_ADDR_SIZE);
+	if (isForMe || ((port == SMPL_PORT_USER_BCAST) && !memcmp(nwk_getBCastAddress(), MRFI_P_DST_ADDR(&fiPtr->mrfiPkt), NET_ADDR_SIZE)))
+	{
+		/* The folllowing test will succeed for the UUD port regardless of the
+		 * source address.
+		 */
+		if (nwk_isConnectionValid(&fiPtr->mrfiPkt, &lid))
+		{
+			/* If this is for the UUD port and we are here then the device is either
+			 * an AP or an RE. In either case it must replay the UUD port frame if the
+			 * frame is not "for me". But it also must handle it since it could have a
+			 * UUD-listening application. Do the reply first and let the subsequent code
+			 * correctly set the frame usage state. Note that the routine return can be
+			 * from this code block. If not it will drop through to the bottom without
+			 * doing a replay.
+			 */
+			/* Do I need to replay it? */
+			if (!isForMe)
+			{
+				/* must be a broadcast for the UUD port */
+				nwk_replayFrame(fiPtr);
+			}
+			/* OK. Now I handle it... */
+			fiPtr->fi_usage = FI_INUSE_UNTIL_DEL;
+			if (spCallback && spCallback(lid))
+			{
+				fiPtr->fi_usage = FI_AVAILABLE;
+				return;
+			}
+		}
+		else
+		{
+			fiPtr->fi_usage = FI_AVAILABLE;
+		}
+	}
+  #if defined( ACCESS_POINT )
+	/* Check to see if we need to save this for a S and F client. Otherwise,
+	 * if it's not for us, get rid of it.
+	 */
+	else if (nwk_isSandFClient(MRFI_P_DST_ADDR(&fiPtr->mrfiPkt), &loc))
+	{
+		/* Don't bother if it is a duplicate frame or if it's a forwarded frame
+		 * echoed back from an RE.
+		 */
+		if (!isDupSandFFrame(&fiPtr->mrfiPkt) &&
+			!(GET_FROM_FRAME(MRFI_P_PAYLOAD(&fiPtr->mrfiPkt), F_FWD_FRAME))
+		)
+		{
+	#if defined(APP_AUTO_ACK)
+			/* Make sure ack request bit is off. Sender will have gone away. */
+			PUT_INTO_FRAME(MRFI_P_PAYLOAD(&fiPtr->mrfiPkt), F_ACK_REQ, 0);
+	#endif
+			fiPtr->fi_usage = FI_INUSE_UNTIL_FWD;
+		}
+		else
+		{
+			fiPtr->fi_usage = FI_AVAILABLE;
+		}
+	}
+	else if (GET_FROM_FRAME(MRFI_P_PAYLOAD(&fiPtr->mrfiPkt), F_TX_DEVICE) == F_TX_DEVICE_AP)
+	{
+		/* I'm an AP and this frame came from an AP. Don't replay. */
+		fiPtr->fi_usage = FI_AVAILABLE;
+	}
+  #elif defined( RANGE_EXTENDER )
+	else if (GET_FROM_FRAME(MRFI_P_PAYLOAD(&fiPtr->mrfiPkt), F_TX_DEVICE) == F_TX_DEVICE_RE)
+	{
+		/* I'm an RE and this frame came from an RE. Don't replay. */
+		fiPtr->fi_usage = FI_AVAILABLE;
+	}
+  #endif
+	else
+	{
+		/* It's not for me and I'm either an AP or I'm an RE and the frame
+		 * didn't come from an RE. Replay the frame.
+		 */
+		nwk_replayFrame(fiPtr);
+	}
 #endif  /* !END_DEVICE */
-  return;
+	return;
 }
 #endif   /* SIZE_INFRAME_Q > 0 */
 

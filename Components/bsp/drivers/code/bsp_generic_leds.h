@@ -67,7 +67,7 @@
   ( (low) ? (!((port) & BV(bit))) : ((port) & BV(bit)) )
 
 #define __bsp_LED_TOGGLE__(bit,port,ddr,low)     st( port ^= BV(bit); )
-#define __bsp_LED_CONFIG__(bit,port,ddr,low)     st( ddr |= BV(bit); )
+#define __bsp_LED_CONFIG__(bit,port,ddr,low)     st( ddr  |= BV(bit); )
 
 
 
@@ -77,17 +77,17 @@
                                    (defined __bsp_LED1_DDR__)  + \
                                    (defined __bsp_LED1_IS_ACTIVE_LOW__))
 #if (__bsp_NUM_LED1_DEFINES__ == 4)
-#define __bsp_LED1_TURN_ON__()    __bsp_LED_TURN_ON__ ( __bsp_LED1_BIT__, __bsp_LED1_PORT__, __bsp_LED1_DDR__, __bsp_LED1_IS_ACTIVE_LOW__ )
-#define __bsp_LED1_TURN_OFF__()   __bsp_LED_TURN_OFF__( __bsp_LED1_BIT__, __bsp_LED1_PORT__, __bsp_LED1_DDR__, __bsp_LED1_IS_ACTIVE_LOW__ )
-#define __bsp_LED1_TOGGLE__()     __bsp_LED_TOGGLE__  ( __bsp_LED1_BIT__, __bsp_LED1_PORT__, __bsp_LED1_DDR__, __bsp_LED1_IS_ACTIVE_LOW__ )
-#define __bsp_LED1_IS_ON__()      __bsp_LED_IS_ON__   ( __bsp_LED1_BIT__, __bsp_LED1_PORT__, __bsp_LED1_DDR__, __bsp_LED1_IS_ACTIVE_LOW__ )
-#define __bsp_LED1_CONFIG__()     __bsp_LED_CONFIG__  ( __bsp_LED1_BIT__, __bsp_LED1_PORT__, __bsp_LED1_DDR__, __bsp_LED1_IS_ACTIVE_LOW__ )
+	#define __bsp_LED1_TURN_ON__()    __bsp_LED_TURN_ON__ ( __bsp_LED1_BIT__, __bsp_LED1_PORT__, __bsp_LED1_DDR__, __bsp_LED1_IS_ACTIVE_LOW__ )
+	#define __bsp_LED1_TURN_OFF__()   __bsp_LED_TURN_OFF__( __bsp_LED1_BIT__, __bsp_LED1_PORT__, __bsp_LED1_DDR__, __bsp_LED1_IS_ACTIVE_LOW__ )
+	#define __bsp_LED1_TOGGLE__()     __bsp_LED_TOGGLE__  ( __bsp_LED1_BIT__, __bsp_LED1_PORT__, __bsp_LED1_DDR__, __bsp_LED1_IS_ACTIVE_LOW__ )
+	#define __bsp_LED1_IS_ON__()      __bsp_LED_IS_ON__   ( __bsp_LED1_BIT__, __bsp_LED1_PORT__, __bsp_LED1_DDR__, __bsp_LED1_IS_ACTIVE_LOW__ )
+	#define __bsp_LED1_CONFIG__()     __bsp_LED_CONFIG__  ( __bsp_LED1_BIT__, __bsp_LED1_PORT__, __bsp_LED1_DDR__, __bsp_LED1_IS_ACTIVE_LOW__ )
 #elif (__bsp_NUM_LED1_DEFINES__ == 0)
-#define __bsp_LED1_TURN_ON__()    /* no LED */
-#define __bsp_LED1_TURN_OFF__()   /* no LED */
-#define __bsp_LED1_TOGGLE__()     /* no LED */
-#define __bsp_LED1_IS_ON__()      /* no LED */  0
-#define __bsp_LED1_CONFIG__()     /* no LED */
+	#define __bsp_LED1_TURN_ON__()    /* no LED */
+	#define __bsp_LED1_TURN_OFF__()   /* no LED */
+	#define __bsp_LED1_TOGGLE__()     /* no LED */
+	#define __bsp_LED1_IS_ON__()      /* no LED */  0
+	#define __bsp_LED1_CONFIG__()     /* no LED */
 #else
 #error "ERROR: Incomplete number of macros for LED1."
 #endif
@@ -250,11 +250,11 @@
 
 /* -------------------- number of LEDs defined -------------------- */
 #ifndef __bsp_NUM_LEDS__
-#error "ERROR: Number of LEDs is not specified."
+	#error "ERROR: Number of LEDs is not specified."
 #else
-#if ((__bsp_NUM_LEDS__ > 8) || (__bsp_NUM_LEDS__ < 0))
-#error "ERROR: Unsupported number of LEDs specified.  Maximum is eight."
-#endif
+	#if ((__bsp_NUM_LEDS__ > 8) || (__bsp_NUM_LEDS__ < 0))
+		#error "ERROR: Unsupported number of LEDs specified.  Maximum is eight."
+	#endif
 #endif
 
 #if (((__bsp_NUM_LED1_DEFINES__ != 0) + \
@@ -265,13 +265,13 @@
       (__bsp_NUM_LED6_DEFINES__ != 0) + \
       (__bsp_NUM_LED7_DEFINES__ != 0) + \
       (__bsp_NUM_LED8_DEFINES__ != 0)) != __bsp_NUM_LEDS__)
-#error "ERROR: Inconsistency between defined macros and specified number of LEDs."
+	#error "ERROR: Inconsistency between defined macros and specified number of LEDs."
 #endif
 
 /* -------------------- blink delay loop count -------------------- */
-#ifndef __bsp_LED_BLINK_LOOP_COUNT__
-#error "ERROR: Blink delay count is missing."
-#endif
+	#ifndef __bsp_LED_BLINK_LOOP_COUNT__
+		#error "ERROR: Blink delay count is missing."
+	#endif
 
 /**************************************************************************************************
  */

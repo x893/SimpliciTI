@@ -11,7 +11,7 @@
 #endif
 
 void toggleLED(uint8_t);
-static void linkTo(void);
+void linkTo(void);
 void createRandomAddress(addr_t * lAddr);
 
 static uint8_t  sTid = 0;
@@ -43,7 +43,7 @@ int main (void)
 	/* Keep trying to join (a side effect of successful initialization) until
 	 * successful. Toggle LEDS to indicate that joining has not occurred.
 	 */
-	while (SMPL_SUCCESS != SMPL_Init(0))
+	while (SMPL_SUCCESS != SMPL_Init(NULL))
 	{
 		toggleLED(1);
 		toggleLED(2);
@@ -61,7 +61,7 @@ int main (void)
 		FHSS_ACTIVE( nwk_pllBackgrounder( false ) );
 }
 
-static void linkTo()
+void linkTo()
 {
 	uint8_t     msg[2];
 	uint8_t     button, misses, done;
@@ -123,7 +123,7 @@ static void linkTo()
 				/* Try sending message MISSES_IN_A_ROW times looking for ack */
 				for (misses=0; misses < MISSES_IN_A_ROW; ++misses)
 				{
-					if (SMPL_SUCCESS == (rc=SMPL_SendOpt(sLinkID1, msg, sizeof(msg), SMPL_TXOPTION_ACKREQ)))
+					if (SMPL_SUCCESS == (rc = SMPL_SendOpt(sLinkID1, msg, sizeof(msg), SMPL_TXOPTION_ACKREQ)))
 					{
 						/* Message acked. We're done. Toggle LED 1 to indicate ack received. */
 						toggleLED(1);

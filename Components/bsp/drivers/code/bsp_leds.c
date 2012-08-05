@@ -57,9 +57,9 @@
 #define BSP_CONFIG_LED8()    __bsp_LED8_CONFIG__()
 
 #ifdef __bsp_LED_EXTENDED_CONFIG__
-#define BSP_LED_EXTENDED_CONFIG()  __bsp_LED_EXTENDED_CONFIG__()
+	#define BSP_LED_EXTENDED_CONFIG()  __bsp_LED_EXTENDED_CONFIG__()
 #else
-#define BSP_LED_EXTENDED_CONFIG()
+	#define BSP_LED_EXTENDED_CONFIG()
 #endif
 
 

@@ -30,11 +30,12 @@
 	#endif
 #endif
 
-#if defined NWK_PLL && !defined MRFI_TIMER_ALWAYS_ACTIVE
+#if defined( NWK_PLL ) && !defined ( MRFI_TIMER_ALWAYS_ACTIVE )
 	#define MRFI_TIMER_ALWAYS_ACTIVE
 #endif
 
 #ifdef MRFI_TIMER_ALWAYS_ACTIVE
+
 	#define BSP_TIMER_A3 0x4133 // 'A' and '3' characters in hex
 	#define BSP_TIMER_B7 0x4237 // 'B' and '7' characters in hex
 
@@ -53,6 +54,7 @@
 								   + ( ( BSP_TIMER_PRESCALE_VALUE == 0 ) ? 0 : 1 ) ) )
 	//  #define BSP_TIMER_CLK_KHZ ((BSP_CLOCK_MHZ * 2000L / BSP_TIMER_PRESCALE_DIVISOR + 1)/2)
 	//  #define BSP_TIMER_CLK_KHZ 6500
+
 	#ifndef BSP_CONFIG_CLOCK_KHZ
 		#define BSP_TIMER_CLK_KHZ	((BSP_CLOCK_MHZ * 2000L / BSP_TIMER_PRESCALE_DIVISOR + 1) / 2)
 	#else
@@ -103,14 +105,16 @@ void BSP_InitSPI(SPI_TypeDef * port);
 	char __bsp_debug(char data);
 	void __bsp_debug_msg(const char * m);
 	void __bsp_debug_msg_ln(const char * m);
-	void __bsp_debug_clear(void);
 	void __bsp_debug_dec(int num);
+	void __bsp_debug_hex(uint8_t num);
+	void __bsp_debug_hex_ln(uint8_t num);
 
 	#define DEBUG(m)			__bsp_debug_msg(m)
 	#define DEBUG_LN(m)			__bsp_debug_msg_ln(m)
 	#define DEBUG_PRINT(m...)	printf(m)
-	#define DEBUG_CLEAR()		__bsp_debug_clear()
-	#define DEBUG_DEC(n)			__bsp_debug_dec(n)
+	#define DEBUG_DEC(n)		__bsp_debug_dec(n)
+	#define DEBUG_HEX(n)		__bsp_debug_hex(n)
+	#define DEBUG_HEX_LN(n)		__bsp_debug_hex_ln(n)
 
 #else
 

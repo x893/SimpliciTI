@@ -130,12 +130,15 @@ smplStatus_t SMPL_Init(uint8_t (*f)(linkID_t))
 
 		/* initialize network */
 		if ((rc = nwk_nwkInit(f)) != SMPL_SUCCESS)
+    {
 			return rc;
+    }
 
 		MRFI_WakeUp();
 #if defined( FREQUENCY_AGILITY )
 		{
 			freqEntry_t chan;
+
 			chan.logicalChan = 0;
 			/* ok to set default channel explicitly now that MRFI initialized. */
 			nwk_setChannel(&chan);
@@ -170,10 +173,10 @@ smplStatus_t SMPL_Init(uint8_t (*f)(linkID_t))
   #endif
 #endif
 
-  /* Join. if no AP or Join fails that status is returned. */
-  rc = nwk_join();
+	/* Join. if no AP or Join fails that status is returned. */
+	rc = nwk_join();
 
-  return rc;
+	return rc;
 }
 
 /******************************************************************************
@@ -196,42 +199,42 @@ smplStatus_t SMPL_Init(uint8_t (*f)(linkID_t))
 
 smplStatus_t SMPL_LinkListen(linkID_t *linkID)
 {
-  uint8_t  radioState = MRFI_GetRadioState();
-  uint16_t i;
-  linkID_t locLinkID;
+	uint8_t  radioState = MRFI_GetRadioState();
+	uint16_t i;
+	linkID_t locLinkID;
 
-  /* Set the context. We want to reject any link frames received if
-   * we're not listening. For example if we're an AP we are in
-   * promiscuous mode and we'll see any broadcast link frames.
-   */
-  nwk_setListenContext(LINK_LISTEN_ON);
+	/* Set the context. We want to reject any link frames received if
+	 * we're not listening. For example if we're an AP we are in
+	 * promiscuous mode and we'll see any broadcast link frames.
+	 */
+	nwk_setListenContext(LINK_LISTEN_ON);
 
-  NWK_CHECK_FOR_SETRX(radioState);
+	NWK_CHECK_FOR_SETRX(radioState);
 
-  for (i=0; i<LINKLISTEN_POLL_COUNT; ++i)
-  {
-    /* check the semaphore. local port is assigned when the reply is sent. */
-    if ((locLinkID = nwk_getLocalLinkID()) != 0)
-    {
-      break;
-    }
-    NWK_DELAY(LINKLISTEN_POLL_PERIOD_MS);
-  }
+	for (i=0; i<LINKLISTEN_POLL_COUNT; ++i)
+	{
+		/* check the semaphore. local port is assigned when the reply is sent. */
+		if ((locLinkID = nwk_getLocalLinkID()) != 0)
+		{
+			break;
+		}
+		NWK_DELAY(LINKLISTEN_POLL_PERIOD_MS);
+	}
 
-  NWK_CHECK_FOR_RESTORE_STATE(radioState);
+	NWK_CHECK_FOR_RESTORE_STATE(radioState);
 
-  /* If the listen is terminated without hearing a message and setting a
-   * link ID the listen context must be explicitly turned off.
-   */
-  if (!(locLinkID))
-  {
-    nwk_setListenContext(LINK_LISTEN_OFF);
-    return SMPL_TIMEOUT;
-  }
+	/* If the listen is terminated without hearing a message and setting a
+	 * link ID the listen context must be explicitly turned off.
+	 */
+	if (!(locLinkID))
+	{
+		nwk_setListenContext(LINK_LISTEN_OFF);
+		return SMPL_TIMEOUT;
+	}
 
-  *linkID = locLinkID;
+	*linkID = locLinkID;
 
-  return SMPL_SUCCESS;
+	return SMPL_SUCCESS;
 }
 
 /******************************************************************************
@@ -259,7 +262,7 @@ smplStatus_t SMPL_LinkListen(linkID_t *linkID)
  */
 smplStatus_t SMPL_Send(linkID_t lid, uint8_t *msg, uint8_t len)
 {
-  return SMPL_SendOpt(lid, msg, len, SMPL_TXOPTION_NONE);
+	return SMPL_SendOpt(lid, msg, len, SMPL_TXOPTION_NONE);
 }
 
 /******************************************************************************
@@ -288,117 +291,117 @@ smplStatus_t SMPL_Send(linkID_t lid, uint8_t *msg, uint8_t len)
  */
 smplStatus_t SMPL_SendOpt(linkID_t lid, uint8_t *msg, uint8_t len, txOpt_t options)
 {
-  frameInfo_t  *pFrameInfo;
-  connInfo_t   *pCInfo     = nwk_getConnInfo(lid);
-  smplStatus_t  rc         = SMPL_BAD_PARAM;
-  uint8_t       radioState = MRFI_GetRadioState();
-  uint8_t       ackreq     = 0;
+	frameInfo_t  *pFrameInfo;
+	connInfo_t   *pCInfo     = nwk_getConnInfo(lid);
+	smplStatus_t  rc         = SMPL_BAD_PARAM;
+	uint8_t       radioState = MRFI_GetRadioState();
+	uint8_t       ackreq     = 0;
 #if defined(ACCESS_POINT)
-  uint8_t  loc;
+	uint8_t  loc;
 #endif
 
-  /* we have the connection info for this Link ID. make sure it is valid. */
-   if (!pCInfo || ((rc=nwk_checkConnInfo(pCInfo, CHK_TX)) != SMPL_SUCCESS))
-  {
-    return rc;
-  }
+	/* we have the connection info for this Link ID. make sure it is valid. */
+	if (!pCInfo || ((rc=nwk_checkConnInfo(pCInfo, CHK_TX)) != SMPL_SUCCESS))
+	{
+		return rc;
+	}
 
-  /* parameter sanity check... */
-  if (!msg || (len > MAX_APP_PAYLOAD))
-  {
-    return rc;
-  }
+	/* parameter sanity check... */
+	if (!msg || (len > MAX_APP_PAYLOAD))
+	{
+		return rc;
+	}
 
-  /* Build an outgoing message frame destined for the port from the
-   * connection info using the destination address also from the
-   * connection info.
-   */
-  if (SMPL_TXOPTION_NONE == options)
-  {
-    pFrameInfo = nwk_buildFrame(pCInfo->portTx, msg, len, pCInfo->hops2target);
-  }
+	/* Build an outgoing message frame destined for the port from the
+	 * connection info using the destination address also from the
+	 * connection info.
+	 */
+	if (SMPL_TXOPTION_NONE == options)
+	{
+		pFrameInfo = nwk_buildFrame(pCInfo->portTx, msg, len, pCInfo->hops2target);
+	}
 #if defined(APP_AUTO_ACK)
-  else if (options & SMPL_TXOPTION_ACKREQ)
-  {
-    if (SMPL_LINKID_USER_UUD != lid)
-    {
-      pFrameInfo = nwk_buildAckReqFrame(pCInfo->portTx, msg, len, pCInfo->hops2target, &pCInfo->ackTID);
-      ackreq     = 1;
-    }
-    else
-    {
-      /* can't request an ack on the UUD link ID */
-      return SMPL_BAD_PARAM;
-    }
-  }
+	else if (options & SMPL_TXOPTION_ACKREQ)
+	{
+		if (SMPL_LINKID_USER_UUD != lid)
+		{
+			pFrameInfo = nwk_buildAckReqFrame(pCInfo->portTx, msg, len, pCInfo->hops2target, &pCInfo->ackTID);
+			ackreq     = 1;
+		}
+		else
+		{
+			/* can't request an ack on the UUD link ID */
+			return SMPL_BAD_PARAM;
+		}
+	}
 #endif  /* APP_AUTO_ACK */
-  else
-  {
-    return SMPL_BAD_PARAM;
-  }
+	else
+	{
+		return SMPL_BAD_PARAM;
+	}
 
-  if (!pFrameInfo)
-  {
-    return SMPL_NOMEM;
-  }
-  memcpy(MRFI_P_DST_ADDR(&pFrameInfo->mrfiPkt), pCInfo->peerAddr, NET_ADDR_SIZE);
+	if (!pFrameInfo)
+	{
+		return SMPL_NOMEM;
+	}
+	memcpy(MRFI_P_DST_ADDR(&pFrameInfo->mrfiPkt), pCInfo->peerAddr, NET_ADDR_SIZE);
 
 #if defined(SMPL_SECURE)
-  {
-    uint32_t *pUL = 0;
+	{
+		uint32_t *pUL = 0;
 
-    if (pCInfo->thisLinkID != SMPL_LINKID_USER_UUD)
-    {
-      pUL = &pCInfo->connTxCTR;
-    }
-    nwk_setSecureFrame(&pFrameInfo->mrfiPkt, len, pUL);
-  }
+		if (pCInfo->thisLinkID != SMPL_LINKID_USER_UUD)
+		{
+		pUL = &pCInfo->connTxCTR;
+		}
+		nwk_setSecureFrame(&pFrameInfo->mrfiPkt, len, pUL);
+	}
 #endif  /* SMPL_SECURE */
 
 #if defined(ACCESS_POINT)
-  /* If we are an AP trying to send to a polling device, don't do it.
-   * See if the target is a store-and-forward client.
-   */
-  if (nwk_isSandFClient(MRFI_P_DST_ADDR(&pFrameInfo->mrfiPkt), &loc))
-  {
-     pFrameInfo->fi_usage = FI_INUSE_UNTIL_FWD;
-     return SMPL_SUCCESS;
-  }
-  else
+	/* If we are an AP trying to send to a polling device, don't do it.
+	 * See if the target is a store-and-forward client.
+	 */
+	if (nwk_isSandFClient(MRFI_P_DST_ADDR(&pFrameInfo->mrfiPkt), &loc))
+	{
+		pFrameInfo->fi_usage = FI_INUSE_UNTIL_FWD;
+		return SMPL_SUCCESS;
+	}
+	else
 #endif  /* ACCESS_POINT */
-  {
-    rc = nwk_sendFrame(pFrameInfo, MRFI_TX_TYPE_CCA);
-  }
+	{
+		rc = nwk_sendFrame(pFrameInfo, MRFI_TX_TYPE_CCA);
+	}
 
 #if !defined(APP_AUTO_ACK)
-  /* save a little code space with this #if */
-  (void) ackreq;    /* keep compiler happy */
-  return rc;
+	/* save a little code space with this #if */
+	(void) ackreq;    /* keep compiler happy */
+	return rc;
 #else
-  /* we're done if the send failed or no ack requested. */
-  if (SMPL_SUCCESS != rc || !ackreq)
-  {
-    return rc;
-  }
+	/* we're done if the send failed or no ack requested. */
+	if (SMPL_SUCCESS != rc || !ackreq)
+	{
+		return rc;
+	}
 
-  NWK_CHECK_FOR_SETRX(radioState);
-  NWK_REPLY_DELAY();
-  NWK_CHECK_FOR_RESTORE_STATE(radioState);
+	NWK_CHECK_FOR_SETRX(radioState);
+	NWK_REPLY_DELAY();
+	NWK_CHECK_FOR_RESTORE_STATE(radioState);
 
-  {
-    bspIState_t intState;
+	{
+		bspIState_t intState;
 
-    /* If the saved TID hasn't been reset then we never got the ack. */
-    BSP_ENTER_CRITICAL_SECTION(intState);
-    if (pCInfo->ackTID)
-    {
-      pCInfo->ackTID = 0;
-      rc = SMPL_NO_ACK;
-    }
-    BSP_EXIT_CRITICAL_SECTION(intState);
-  }
+		/* If the saved TID hasn't been reset then we never got the ack. */
+		BSP_ENTER_CRITICAL_SECTION(intState);
+		if (pCInfo->ackTID)
+		{
+			pCInfo->ackTID = 0;
+			rc = SMPL_NO_ACK;
+		}
+		BSP_EXIT_CRITICAL_SECTION(intState);
+	}
 
-  return rc;
+	return rc;
 #endif  /* APP_AUTO_ACK */
 }
 
@@ -442,85 +445,85 @@ smplStatus_t SMPL_SendOpt(linkID_t lid, uint8_t *msg, uint8_t len, txOpt_t optio
  */
 smplStatus_t SMPL_Receive(linkID_t lid, uint8_t *msg, uint8_t *len)
 {
-  connInfo_t  *pCInfo = nwk_getConnInfo(lid);
-  smplStatus_t rc = SMPL_BAD_PARAM;
-  rcvContext_t rcv;
+	connInfo_t  *pCInfo = nwk_getConnInfo(lid);
+	smplStatus_t rc = SMPL_BAD_PARAM;
+	rcvContext_t rcv;
 
-  if (!pCInfo || ((rc=nwk_checkConnInfo(pCInfo, CHK_RX)) != SMPL_SUCCESS))
-  {
-    return rc;
-  }
+	if (!pCInfo || ((rc=nwk_checkConnInfo(pCInfo, CHK_RX)) != SMPL_SUCCESS))
+	{
+		return rc;
+	}
 
-  rcv.type  = RCV_APP_LID;
-  rcv.t.lid = lid;
+	rcv.type  = RCV_APP_LID;
+	rcv.t.lid = lid;
 
 #if defined(RX_POLLS)
-  {
-    uint8_t numChans  = 1;
-#if defined(FREQUENCY_AGILITY)
-    freqEntry_t chans[NWK_FREQ_TBL_SIZE];
-    uint8_t     scannedB4 = 0;
-#endif
+	{
+		uint8_t numChans  = 1;
+	#if defined(FREQUENCY_AGILITY)
+		freqEntry_t chans[NWK_FREQ_TBL_SIZE];
+		uint8_t     scannedB4 = 0;
+	#endif
 
-    do
-    {
-      uint8_t radioState = MRFI_GetRadioState();
+		do
+		{
+			uint8_t radioState = MRFI_GetRadioState();
 
-      /* I'm polling. Do the poll to stimulate the sending of a frame. If the
-       * frame has application length of 0 it means there were no frames.  If
-       * no reply is received infer that the channel is changed. We then need
-       * to scan and then retry the poll on each channel returned.
-       */
-      if (SMPL_SUCCESS != (rc=nwk_poll(pCInfo->portRx, pCInfo->peerAddr)))
-      {
-        /* for some reason couldn't send the poll out. */
-        return rc;
-      }
+			/* I'm polling. Do the poll to stimulate the sending of a frame. If the
+			 * frame has application length of 0 it means there were no frames.  If
+			 * no reply is received infer that the channel is changed. We then need
+			 * to scan and then retry the poll on each channel returned.
+			 */
+			if (SMPL_SUCCESS != (rc=nwk_poll(pCInfo->portRx, pCInfo->peerAddr)))
+			{
+				/* for some reason couldn't send the poll out. */
+				return rc;
+			}
 
-      /* do this before code block below which may reset it. */
-      numChans--;
+			/* do this before code block below which may reset it. */
+			numChans--;
 
-      /* Wait until there's a frame. if the len is 0 then return SMPL_NO_FRAME
-       * to the caller. In the poll case the AP always sends something.
-       */
-      NWK_CHECK_FOR_SETRX(radioState);
-      NWK_REPLY_DELAY();
-      NWK_CHECK_FOR_RESTORE_STATE(radioState);
+			/* Wait until there's a frame. if the len is 0 then return SMPL_NO_FRAME
+			 * to the caller. In the poll case the AP always sends something.
+			 */
+			NWK_CHECK_FOR_SETRX(radioState);
+			NWK_REPLY_DELAY();
+			NWK_CHECK_FOR_RESTORE_STATE(radioState);
 
-      /* TODO: deal with pending */
-      rc = nwk_retrieveFrame(&rcv, msg, len, 0, 0);
+			/* TODO: deal with pending */
+			rc = nwk_retrieveFrame(&rcv, msg, len, 0, 0);
 
-#if defined(FREQUENCY_AGILITY)
-      if (SMPL_SUCCESS == rc)
-      {
-        /* we received something... */
-        return (*len) ? SMPL_SUCCESS : SMPL_NO_PAYLOAD;
-      }
+	#if defined(FREQUENCY_AGILITY)
+			if (SMPL_SUCCESS == rc)
+			{
+				/* we received something... */
+				return (*len) ? SMPL_SUCCESS : SMPL_NO_PAYLOAD;
+			}
 
-      /* No reply. scan for other channel(s) if we haven't already. Then set
-       * one and try again.
-       */
-      if (!scannedB4)
-      {
-        numChans  = nwk_scanForChannels(chans);
-        scannedB4 = 1;
-      }
-      if (numChans)
-      {
-        nwk_setChannel(&chans[numChans-1]);
-      }
-#else /*  FREQUENCY_AGILITY */
-      return (*len) ? rc : ((SMPL_SUCCESS == rc) ? SMPL_NO_PAYLOAD : SMPL_TIMEOUT);
-#endif
-    } while (numChans);
-  }
+			/* No reply. scan for other channel(s) if we haven't already. Then set
+			 * one and try again.
+			 */
+			if (!scannedB4)
+			{
+				numChans  = nwk_scanForChannels(chans);
+				scannedB4 = 1;
+			}
+			if (numChans)
+			{
+				nwk_setChannel(&chans[numChans-1]);
+			}
+	#else /*  FREQUENCY_AGILITY */
+			return (*len) ? rc : ((SMPL_SUCCESS == rc) ? SMPL_NO_PAYLOAD : SMPL_TIMEOUT);
+	#endif
+		} while (numChans);
+	}
 
-#if defined(FREQUENCY_AGILITY)
-  return SMPL_NO_CHANNEL;
-#endif
+	#if defined(FREQUENCY_AGILITY)
+	return SMPL_NO_CHANNEL;
+	#endif
 
 #else  /* RX_POLLS */
-  return nwk_retrieveFrame(&rcv, msg, len, 0, 0);
+	return nwk_retrieveFrame(&rcv, msg, len, 0, 0);
 #endif  /* RX_POLLS */
 }
 
@@ -546,7 +549,7 @@ smplStatus_t SMPL_Receive(linkID_t lid, uint8_t *msg, uint8_t *len)
  */
 smplStatus_t SMPL_Link(linkID_t *lid)
 {
-  return nwk_link(lid);
+	return nwk_link(lid);
 }
 
 #if defined(EXTENDED_API)
@@ -594,7 +597,7 @@ smplStatus_t SMPL_Unlink(linkID_t lid)
  */
 smplStatus_t SMPL_Ping(linkID_t lid)
 {
-  return nwk_ping(lid);
+	return nwk_ping(lid);
 }
 
 /**************************************************************************************
@@ -620,61 +623,61 @@ smplStatus_t SMPL_Ping(linkID_t lid)
  */
 smplStatus_t SMPL_Commission(addr_t *peerAddr, uint8_t locPort, uint8_t rmtPort, linkID_t *lid)
 {
-  connInfo_t   *pCInfo = nwk_getNextConnection();
-  smplStatus_t  rc     = SMPL_BAD_PARAM;
+	connInfo_t   *pCInfo = nwk_getNextConnection();
+	smplStatus_t  rc     = SMPL_BAD_PARAM;
 
-  do {
-    if (pCInfo)
-    {
-      /* sanity checks... */
+	do {
+		if (pCInfo)
+		{
+			/* sanity checks... */
 
-      /* Check port info. */
-      if ((locPort > SMPL_PORT_STATIC_MAX) || (locPort < (SMPL_PORT_STATIC_MAX - PORT_USER_STATIC_NUM + 1)))
-      {
-        continue;
-      }
+			/* Check port info. */
+			if ((locPort > SMPL_PORT_STATIC_MAX) || (locPort < (SMPL_PORT_STATIC_MAX - PORT_USER_STATIC_NUM + 1)))
+			{
+				continue;
+			}
 
-      if ((rmtPort > SMPL_PORT_STATIC_MAX) || (rmtPort < (SMPL_PORT_STATIC_MAX - PORT_USER_STATIC_NUM + 1)))
-      {
-        continue;
-      }
+			if ((rmtPort > SMPL_PORT_STATIC_MAX) || (rmtPort < (SMPL_PORT_STATIC_MAX - PORT_USER_STATIC_NUM + 1)))
+			{
+				continue;
+			}
 
-      /* Must supply a pointer to the Link ID object */
-      if (!lid)
-      {
-        /* No Link ID pointer supplied */
-        continue;
-      }
+			/* Must supply a pointer to the Link ID object */
+			if (!lid)
+			{
+				/* No Link ID pointer supplied */
+				continue;
+			}
 
-      /* we're sane */
+			/* we're sane */
 
-      /* Use the value generated at connection object assign time. */
-      *lid = pCInfo->thisLinkID;
+			/* Use the value generated at connection object assign time. */
+			*lid = pCInfo->thisLinkID;
 
-      /* store peer's address */
-      memcpy(pCInfo->peerAddr, peerAddr, NET_ADDR_SIZE);
+			/* store peer's address */
+			memcpy(pCInfo->peerAddr, peerAddr, NET_ADDR_SIZE);
 
-      /* store port info */
-      pCInfo->portRx = locPort;
-      pCInfo->portTx = rmtPort;
+			/* store port info */
+			pCInfo->portRx = locPort;
+			pCInfo->portTx = rmtPort;
 
-      pCInfo->hops2target = MAX_HOPS;
+			pCInfo->hops2target = MAX_HOPS;
 
-      rc = SMPL_SUCCESS;
-    }
-    else
-    {
-      /* No room in Connection table */
-      rc = SMPL_NOMEM;
-    }
-  } while (0);
+			rc = SMPL_SUCCESS;
+		}
+		else
+		{
+			/* No room in Connection table */
+			rc = SMPL_NOMEM;
+		}
+	} while (0);
 
-  if ((SMPL_SUCCESS != rc) && pCInfo)
-  {
-    nwk_freeConnection(pCInfo);
-  }
+	if ((SMPL_SUCCESS != rc) && pCInfo)
+	{
+		nwk_freeConnection(pCInfo);
+	}
 
-  return rc;
+	return rc;
 }
 #endif   /* EXTENDED_API */
 
@@ -757,8 +760,8 @@ smplStatus_t SMPL_Ioctl(ioctlObject_t object, ioctlAction_t action, void *val)
 #endif  /* EXTENDED_API */
 
     case IOCTL_OBJ_CONNOBJ:
-      rc = nwk_connectionControl(action, val);
-      break;
+		rc = nwk_connectionControl(action, val);
+		break;
 
     case IOCTL_OBJ_ADDR:
 		if ((IOCTL_ACT_GET == action) || (IOCTL_ACT_SET == action))
@@ -772,69 +775,69 @@ smplStatus_t SMPL_Ioctl(ioctlObject_t object, ioctlAction_t action, void *val)
 		break;
 
     case IOCTL_OBJ_RAW_IO:
-      if (IOCTL_ACT_WRITE == action)
-      {
-        rc = nwk_rawSend((ioctlRawSend_t *)val);
-      }
-      else if (IOCTL_ACT_READ == action)
-      {
-        rc = nwk_rawReceive((ioctlRawReceive_t *)val);
-      }
-      else
-      {
-        rc = SMPL_BAD_PARAM;
-      }
-      break;
+		if (IOCTL_ACT_WRITE == action)
+		{
+			rc = nwk_rawSend((ioctlRawSend_t *)val);
+		}
+		else if (IOCTL_ACT_READ == action)
+		{
+			rc = nwk_rawReceive((ioctlRawReceive_t *)val);
+		}
+		else
+		{
+			rc = SMPL_BAD_PARAM;
+		}
+		break;
 
     case IOCTL_OBJ_RADIO:
-      rc = nwk_radioControl(action, val);
-      break;
+		rc = nwk_radioControl(action, val);
+		break;
 
 #if defined(ACCESS_POINT)
     case IOCTL_OBJ_AP_JOIN:
-      rc = nwk_joinContext(action);
-      break;
+		rc = nwk_joinContext(action);
+		break;
 #endif
 #if defined(FREQUENCY_AGILITY)
     case IOCTL_OBJ_FREQ:
-      rc = nwk_freqControl(action, val);
-      break;
+		rc = nwk_freqControl(action, val);
+		break;
 #endif
 #if defined NWK_PLL
     case IOCTL_OBJ_PLL:
-      rc = nwk_pllControl(action, val);
-      break;
+		rc = nwk_pllControl(action, val);
+		break;
 #endif
     case IOCTL_OBJ_FWVER:
-      if (IOCTL_ACT_GET == action)
-      {
-        memcpy(val, nwk_getFWVersion(), SMPL_FWVERSION_SIZE);
-        rc = SMPL_SUCCESS;
-      }
-      else
-      {
-        rc = SMPL_BAD_PARAM;
-      }
-      break;
+		if (IOCTL_ACT_GET == action)
+		{
+			memcpy(val, nwk_getFWVersion(), SMPL_FWVERSION_SIZE);
+			rc = SMPL_SUCCESS;
+		}
+		else
+		{
+			rc = SMPL_BAD_PARAM;
+		}
+		break;
 
     case IOCTL_OBJ_PROTOVER:
-      if (IOCTL_ACT_GET == action)
-      {
-        *((uint8_t *)val) = nwk_getProtocolVersion();
-        rc = SMPL_SUCCESS;
-      }
-      else
-      {
-        rc = SMPL_BAD_PARAM;
-      }
-      break;
+		if (IOCTL_ACT_GET == action)
+		{
+			*((uint8_t *)val) = nwk_getProtocolVersion();
+			rc = SMPL_SUCCESS;
+		}
+		else
+		{
+			rc = SMPL_BAD_PARAM;
+		}
+		break;
 
     default:
-      rc = SMPL_BAD_PARAM;
-      break;
-  }
+		rc = SMPL_BAD_PARAM;
+		break;
+	}
 
-  return rc;
+	return rc;
 }
 
 /******************************************************************************
@@ -857,22 +860,22 @@ smplStatus_t SMPL_Ioctl(ioctlObject_t object, ioctlAction_t action, void *val)
  */
 static uint8_t ioctlPreInitAccessIsOK(ioctlObject_t object)
 {
-  uint8_t rc;
+	uint8_t rc;
 
-  /* Currently the only legal pre-init accesses are the address and
-   * the token objects.
-   */
-  switch (object)
-  {
-    case IOCTL_OBJ_ADDR:
+	/* Currently the only legal pre-init accesses are the address and
+	 * the token objects.
+	 */
+	switch (object)
+	{
+	case IOCTL_OBJ_ADDR:
     case IOCTL_OBJ_TOKEN:
-      rc = 1;   /* legal */
-      break;
+		rc = 1;   /* legal */
+		break;
 
     default:
-      rc = 0;   /* not legal when init not done */
-      break;
-  }
+		rc = 0;   /* not legal when init not done */
+		break;
+	}
 
-  return rc;
+	return rc;
 }

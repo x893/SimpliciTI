@@ -51,7 +51,7 @@
 
 typedef struct
 {
-  uint8_t  addr[NET_ADDR_SIZE];
+	uint8_t  addr[NET_ADDR_SIZE];
 } addr_t;
 
 typedef uint8_t linkID_t;
@@ -117,11 +117,11 @@ typedef struct
 
 typedef struct
 {
-  addr_t  *addr;
-  uint8_t *msg;
-  uint8_t  len;
-  uint8_t  port;
-  uint8_t  hopCount;
+	addr_t  *addr;
+	uint8_t *msg;
+	uint8_t  len;
+	uint8_t  port;
+	uint8_t  hopCount;
 } ioctlRawReceive_t;
 
 /*
@@ -131,8 +131,8 @@ typedef int8_t rssi_t;
 
 typedef struct
 {
-  rssi_t  rssi;
-  uint8_t lqi;
+	rssi_t  rssi;
+	uint8_t lqi;
 } rxMetrics_t;
 
 typedef struct
@@ -176,8 +176,8 @@ typedef struct
 
 typedef struct
 {
-  uint8_t      numChan;
-  freqEntry_t *freq;
+	uint8_t		numChan;
+	freqEntry_t	*freq;
 } ioctlScanChan_t;
 
 /* Security typedefs to make things easier if they change types */

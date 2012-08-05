@@ -58,30 +58,33 @@
 
 #if (defined MRFI_CC2500)
 
- #define MRFI_RSSI_OFFSET    72   /* no units */
+	#define MRFI_RSSI_OFFSET			72   /* no units */
 
- /* Worst case wait period in RX state before RSSI becomes valid.
-  * These numbers are from Design Note DN505 with added safety margin.
-  */
-  #define MRFI_RSSI_VALID_DELAY_US    1000
+	/* Worst case wait period in RX state before RSSI becomes valid.
+	 * These numbers are from Design Note DN505 with added safety margin.
+	 */
+	#define MRFI_RSSI_VALID_DELAY_US    1000
 
 #elif (defined MRFI_CC1100)
 
-  #define MRFI_RSSI_OFFSET    79   /* no units */
+	#define MRFI_RSSI_OFFSET			79   /* no units */
 
- /* Worst case wait period in RX state before RSSI becomes valid.
-  * These numbers are from Design Note DN505 with added safety margin.
-  */
-  #define MRFI_RSSI_VALID_DELAY_US    1300
+	/* Worst case wait period in RX state before RSSI becomes valid.
+	 * These numbers are from Design Note DN505 with added safety margin.
+	 */
+	#define MRFI_RSSI_VALID_DELAY_US	1300
 
-#elif (defined MRFI_CC1101) || (defined MRFI_CC1100E_470) || (defined MRFI_CC1100E_950)
+#elif	(defined MRFI_CC1101) || \
+		(defined MRFI_CC110L) || \
+		(defined MRFI_CC1100E_470) || \
+		(defined MRFI_CC1100E_950)
 
-  #define MRFI_RSSI_OFFSET    74   /* no units */
+	#define MRFI_RSSI_OFFSET			74   /* no units */
 
- /* Worst case wait period in RX state before RSSI becomes valid.
-  * These numbers are from Design Note DN505 with added safety margin.
-  */
-  #define MRFI_RSSI_VALID_DELAY_US    1300
+	/* Worst case wait period in RX state before RSSI becomes valid.
+	 * These numbers are from Design Note DN505 with added safety margin.
+	 */
+	#define MRFI_RSSI_VALID_DELAY_US    1300
 
 #else
   #error "ERROR: RSSI offset value not defined for this radio"
@@ -92,68 +95,68 @@
 #define MRFI_MIN_SMPL_FRAME_SIZE            (MRFI_HEADER_SIZE + NWK_HDR_SIZE)
 
 /* GDO functionality */
-#define MRFI_GDO_SYNC           6
-#define MRFI_GDO_CCA            9
-#define MRFI_GDO_PA_PD          27  /* low when transmit is active, low during sleep */
-#define MRFI_GDO_LNA_PD         28  /* low when receive is active, low during sleep */
+#define MRFI_GDO_SYNC			6
+#define MRFI_GDO_CCA			9
+#define MRFI_GDO_PA_PD			27  /* low when transmit is active, low during sleep */
+#define MRFI_GDO_LNA_PD			28  /* low when receive is active, low during sleep */
 
 /* ---------- Radio Abstraction ---------- */
 #if (defined MRFI_CC1100)
-#define MRFI_RADIO_PARTNUM          0x00
-#define MRFI_RADIO_MIN_VERSION      3
+	#define MRFI_RADIO_PARTNUM			0x00
+	#define MRFI_RADIO_MIN_VERSION		3
 
 #elif (defined MRFI_CC1101)
-#define MRFI_RADIO_PARTNUM          0x00
-#define MRFI_RADIO_MIN_VERSION      4
+	#define MRFI_RADIO_PARTNUM			0x00
+	#define MRFI_RADIO_MIN_VERSION		4
 
 #elif (defined MRFI_CC110L)
-#define MRFI_RADIO_PARTNUM          0x00
-#define MRFI_RADIO_MIN_VERSION      7
+	#define MRFI_RADIO_PARTNUM			0x00
+	#define MRFI_RADIO_MIN_VERSION		7
 
 #elif (defined MRFI_CC1100E_470)
-#define MRFI_RADIO_PARTNUM          0x00
-#define MRFI_RADIO_MIN_VERSION      5
+	#define MRFI_RADIO_PARTNUM			0x00
+	#define MRFI_RADIO_MIN_VERSION		5
 
 #elif (defined MRFI_CC1100E_950)
-#define MRFI_RADIO_PARTNUM          0x00
-#define MRFI_RADIO_MIN_VERSION      5
+	#define MRFI_RADIO_PARTNUM			0x00
+	#define MRFI_RADIO_MIN_VERSION		5
 
 #elif (defined MRFI_CC2500)
-#define MRFI_RADIO_PARTNUM          0x80
-#define MRFI_RADIO_MIN_VERSION      3
+	#define MRFI_RADIO_PARTNUM			0x80
+	#define MRFI_RADIO_MIN_VERSION		3
 #else
-#error "ERROR: Missing or unrecognized radio."
+	#error "ERROR: Missing or unrecognized radio."
 #endif
 
 /* GDO0 output pin configuration */
-#define MRFI_SETTING_IOCFG0     MRFI_GDO_SYNC
+#define MRFI_SETTING_IOCFG0		MRFI_GDO_SYNC
 
 /* Main Radio Control State Machine control configuration:
  * Auto Calibrate - when going from IDLE to RX/TX
  * PO_TIMEOUT is extracted from SmartRF setting.
  * XOSC is OFF in Sleep state.
  */
-#define MRFI_SETTING_MCSM0      (0x10 | (SMARTRF_SETTING_MCSM0 & (BV(2)|BV(3))))
+#define MRFI_SETTING_MCSM0		(0x10 | (SMARTRF_SETTING_MCSM0 & (BV(2) | BV(3))))
 
 /* Main Radio Control State Machine control configuration:
  * - Remain RX state after RX
  * - Go to IDLE after TX
  * - RSSI below threshold and NOT receiving.
  */
-#define MRFI_SETTING_MCSM1      0x3C
+#define MRFI_SETTING_MCSM1		0x3C
 
 /*
  *  Packet Length - Setting for maximum allowed packet length.
  *  The PKTLEN setting does not include the length field but maximum frame size does.
  *  Subtract length field size from maximum frame size to get value for PKTLEN.
  */
-#define MRFI_SETTING_PKTLEN     (MRFI_MAX_FRAME_SIZE - MRFI_LENGTH_FIELD_SIZE)
+#define MRFI_SETTING_PKTLEN		(MRFI_MAX_FRAME_SIZE - MRFI_LENGTH_FIELD_SIZE)
 
 /* Packet automation control - Original value except WHITE_DATA is extracted from SmartRF setting. */
-#define MRFI_SETTING_PKTCTRL0   (0x05 | (SMARTRF_SETTING_PKTCTRL0 & BV(6)))
+#define MRFI_SETTING_PKTCTRL0	(0x05 | (SMARTRF_SETTING_PKTCTRL0 & BV(6)))
 
 /* FIFO threshold - this register has fields that need to be configured for the CC1101 */
-#define MRFI_SETTING_FIFOTHR    (0x07 | (SMARTRF_SETTING_FIFOTHR & (BV(4)|BV(5)|BV(6))))
+#define MRFI_SETTING_FIFOTHR	(0x07 | (SMARTRF_SETTING_FIFOTHR & (BV(4)|BV(5)|BV(6))))
 
 /*
  * Maximum tramsmit time is calculated from the data rate times the maximum
@@ -162,32 +165,32 @@
  * respectively.
  */
 #ifndef MRFI_XTAL_FREQ_Hz
-#define MRFI_XTAL_FREQ_Hz 26000000L
+	#define MRFI_XTAL_FREQ_Hz 26000000L
 #endif
 #define MRFI_SYNC_WORD_SIZE ( ( (SMARTRF_SETTING_MDMCFG2 & 0x3) == 0 ) ? 0 : \
                             ( ( (SMARTRF_SETTING_MDMCFG2 & 0x3) != 3 ) ? 2 : 4 ) )
-#define MRFI_PREAMBLE_SIZE ( ( ( SMARTRF_SETTING_MDMCFG1 & 0x70 ) == 0x00 ) ?  2 : \
-                           ( ( ( SMARTRF_SETTING_MDMCFG1 & 0x70 ) == 0x10 ) ?  3 : \
-                           ( ( ( SMARTRF_SETTING_MDMCFG1 & 0x70 ) == 0x20 ) ?  4 : \
-                           ( ( ( SMARTRF_SETTING_MDMCFG1 & 0x70 ) == 0x30 ) ?  6 : \
-                           ( ( ( SMARTRF_SETTING_MDMCFG1 & 0x70 ) == 0x40 ) ?  8 : \
-                           ( ( ( SMARTRF_SETTING_MDMCFG1 & 0x70 ) == 0x50 ) ? 12 : \
-                           ( ( ( SMARTRF_SETTING_MDMCFG1 & 0x70 ) == 0x60 ) ? 16 : \
-                                                                              24 ) ) ) ) ) ) )
-#define MRFI_MAX_TRANSMIT_BYTES ( MRFI_MAX_FRAME_SIZE + MRFI_SYNC_WORD_SIZE + MRFI_PREAMBLE_SIZE )
-#define MRFI_TRANSMIT_BIT_PERIOD_us (1000000.0*(1L<<28)/((SMARTRF_SETTING_MDMCFG3+256.0)*MRFI_XTAL_FREQ_Hz*(1L<<(SMARTRF_SETTING_MDMCFG4 & 0xF))))
-#define MRFI_MAX_TRANSMIT_TIME_us ((long)( MRFI_TRANSMIT_BIT_PERIOD_us * 8 * MRFI_MAX_TRANSMIT_BYTES + 500 ))
+#define MRFI_PREAMBLE_SIZE	( ( ( SMARTRF_SETTING_MDMCFG1 & 0x70 ) == 0x00 ) ?  2 :	\
+							( ( ( SMARTRF_SETTING_MDMCFG1 & 0x70 ) == 0x10 ) ?  3 :	\
+							( ( ( SMARTRF_SETTING_MDMCFG1 & 0x70 ) == 0x20 ) ?  4 :	\
+							( ( ( SMARTRF_SETTING_MDMCFG1 & 0x70 ) == 0x30 ) ?  6 :	\
+							( ( ( SMARTRF_SETTING_MDMCFG1 & 0x70 ) == 0x40 ) ?  8 :	\
+							( ( ( SMARTRF_SETTING_MDMCFG1 & 0x70 ) == 0x50 ) ? 12 :	\
+							( ( ( SMARTRF_SETTING_MDMCFG1 & 0x70 ) == 0x60 ) ? 16 :	\
+																			   24 ) ) ) ) ) ) )
+#define MRFI_MAX_TRANSMIT_BYTES		( MRFI_MAX_FRAME_SIZE + MRFI_SYNC_WORD_SIZE + MRFI_PREAMBLE_SIZE )
+#define MRFI_TRANSMIT_BIT_PERIOD_us	(1000000.0*(1L<<28)/((SMARTRF_SETTING_MDMCFG3+256.0)*MRFI_XTAL_FREQ_Hz*(1L<<(SMARTRF_SETTING_MDMCFG4 & 0xF))))
+#define MRFI_MAX_TRANSMIT_TIME_us	((long)( MRFI_TRANSMIT_BIT_PERIOD_us * 8 * MRFI_MAX_TRANSMIT_BYTES + 500 ))
 
 #ifdef MRFI_TIMER_ALWAYS_ACTIVE
 
-// re-map static functions promoted to public for backwards compatibility
-#define Mrfi_DelayUsec( a ) MRFI_DelayUsec( a )
-#define Mrfi_DelayMs( a ) MRFI_DelayMs( a )
+	// re-map static functions promoted to public for backwards compatibility
+	#define Mrfi_DelayUsec( a )		MRFI_DelayUsec( a )
+	#define Mrfi_DelayMs( a )		MRFI_DelayMs( a )
 
 #endif // !MRFI_TIMER_ALWAYS_ACTIVE
 
-#define MRFI_PKTSTATUS_CCA BV(4)
-#define MRFI_PKTSTATUS_CS  BV(6)
+#define MRFI_PKTSTATUS_CCA	BV(4)
+#define MRFI_PKTSTATUS_CS	BV(6)
 
   /* The SW timer is calibrated by adjusting the call to the microsecond delay
    * routine. This allows maximum calibration control with repects to the longer
@@ -195,9 +198,9 @@
    * to the microsecond routine which can be calibrated independently.
    */
 #if defined(SW_TIMER)
-#define APP_USEC_VALUE    496
+	#define APP_USEC_VALUE	496
 #else
-#define APP_USEC_VALUE    1000
+	#define APP_USEC_VALUE	1000
 #endif
 
 /* ------------------------------------------------------------------------------------------------
@@ -205,24 +208,24 @@
  * ------------------------------------------------------------------------------------------------
  */
 #define MRFI_SYNC_PIN_IS_HIGH()						MRFI_GDO0_PIN_IS_HIGH()
-//#define MRFI_ENABLE_SYNC_PIN_INT()				MRFI_ENABLE_GDO0_INT()
 
 #ifdef BSP_BOARD_STM32
 	#define MRFI_ENABLE_SYNC_PIN_INT()				MRFI_GDO0_SYNC_INT_ENABLE  ( rx_isr_context )
-	//#define MRFI_DISABLE_SYNC_PIN_INT()			MRFI_DISABLE_GDO0_INT()
 	#define MRFI_DISABLE_SYNC_PIN_INT()				MRFI_GDO0_SYNC_INT_DISABLE ( rx_isr_context )
 #else
-	#define MRFI_ENABLE_SYNC_PIN_INT()				( INFIX( P, __mrfi_GDO0_PORT__, IE )  |=  ( ( rx_isr_context == true ) ? 0 : BV(__mrfi_GDO0_BIT__) ) )
+	//#define MRFI_ENABLE_SYNC_PIN_INT()			MRFI_ENABLE_GDO0_INT()
+	#define MRFI_ENABLE_SYNC_PIN_INT()				( INFIX( P, __mrfi_GDO0_PORT__, IE )  |= ( ( rx_isr_context == true ) ? 0 : BV(__mrfi_GDO0_BIT__) ) )
 	//#define MRFI_DISABLE_SYNC_PIN_INT()			MRFI_DISABLE_GDO0_INT()
 	#define MRFI_DISABLE_SYNC_PIN_INT()				( INFIX( P, __mrfi_GDO0_PORT__, IE )  &= ~( ( rx_isr_context == true ) ? 0 : BV(__mrfi_GDO0_BIT__) ) )
 #endif
+
 #define MRFI_SYNC_PIN_INT_IS_ENABLED()              MRFI_GDO0_INT_IS_ENABLED()
 #define MRFI_CLEAR_SYNC_PIN_INT_FLAG()              MRFI_CLEAR_GDO0_INT_FLAG()
 #define MRFI_SYNC_PIN_INT_FLAG_IS_SET()             MRFI_GDO0_INT_FLAG_IS_SET()
 #define MRFI_CONFIG_SYNC_PIN_FALLING_EDGE_INT()     MRFI_CONFIG_GDO0_FALLING_EDGE_INT()
 
 #define MRFI_PAPD_PIN_IS_HIGH()                     MRFI_SYNC_PIN_IS_HIGH()
-#define MRFI_CLEAR_PAPD_PIN_INT_FLAG()              MRFI_CLEAR_SYNC_PIN_INT_FLAG()
+#define MRFI_CLEAR_PAPD_PIN_INT_FLAG()				MRFI_CLEAR_SYNC_PIN_INT_FLAG()
 #define MRFI_PAPD_INT_FLAG_IS_SET()                 MRFI_SYNC_PIN_INT_FLAG_IS_SET()
 #define MRFI_CONFIG_PAPD_FALLING_EDGE_INT()         MRFI_CONFIG_SYNC_PIN_FALLING_EDGE_INT()
 
@@ -231,38 +234,38 @@
 
 #ifndef MRFI_TIMER_ALWAYS_ACTIVE
 
-/* There is no bit in h/w to tell if RSSI in the register is valid or not.
- * The hardware needs to be in RX state for a certain amount of time before
- * a valid RSSI value is calculated and placed in the register. This min
- * wait time is defined by MRFI_BOARD_RSSI_VALID_DELAY_US. We don't need to
- * add such delay every time RSSI value is needed. If the Carier Sense signal
- * is high or CCA signal is high, we know that the RSSI value must be valid.
- * We use that knowledge to reduce our wait time. We break down the delay loop
- * in multiple chunks and during each iteration, check for the CS and CCA
- * signal. If either of these signals is high, we return immediately. Else,
- * we wait for the max delay specified.
- */
-#define MRFI_RSSI_VALID_WAIT()                                                \
-{                                                                             \
-  int16_t delay = MRFI_RSSI_VALID_DELAY_US;                                   \
-  do                                                                          \
-  {                                                                           \
-    if(mrfiSpiReadReg(PKTSTATUS) & (MRFI_PKTSTATUS_CCA | MRFI_PKTSTATUS_CS))  \
-    {                                                                         \
-      break;                                                                  \
-    }                                                                         \
-    Mrfi_DelayUsec(64); /* sleep */                                           \
-    delay -= 64;                                                              \
-  }while(delay > 0);                                                          \
-}                                                                             \
+	/* There is no bit in h/w to tell if RSSI in the register is valid or not.
+	 * The hardware needs to be in RX state for a certain amount of time before
+	 * a valid RSSI value is calculated and placed in the register. This min
+	 * wait time is defined by MRFI_BOARD_RSSI_VALID_DELAY_US. We don't need to
+	 * add such delay every time RSSI value is needed. If the Carier Sense signal
+	 * is high or CCA signal is high, we know that the RSSI value must be valid.
+	 * We use that knowledge to reduce our wait time. We break down the delay loop
+	 * in multiple chunks and during each iteration, check for the CS and CCA
+	 * signal. If either of these signals is high, we return immediately. Else,
+	 * we wait for the max delay specified.
+	 */
+	#define MRFI_RSSI_VALID_WAIT()															\
+	{																					\
+		int16_t delay = MRFI_RSSI_VALID_DELAY_US;										\
+		do																				\
+		{																				\
+			if(mrfiSpiReadReg(PKTSTATUS) & (MRFI_PKTSTATUS_CCA | MRFI_PKTSTATUS_CS))	\
+			{																			\
+				break;																	\
+			}																			\
+			Mrfi_DelayUsec(64); /* sleep */												\
+			delay -= 64;																\
+		} while(delay > 0);																\
+	}
 
 #endif // !MRFI_TIMER_ALWAYS_ACTIVE
 
-#define MRFI_STROBE_IDLE_AND_WAIT()                   \
-{                                                     \
-  mrfiSpiCmdStrobe( SIDLE );                          \
-  while (mrfiSpiCmdStrobe( SNOP ) & 0xF0) ;           \
-}
+#define MRFI_STROBE_IDLE_AND_WAIT()				\
+	{											\
+	  mrfiSpiCmdStrobe( SIDLE );				\
+	  while (mrfiSpiCmdStrobe( SNOP ) & 0xF0) ;	\
+	}
 
 /* ------------------------------------------------------------------------------------------------
  *                                    Local Constants
@@ -276,7 +279,7 @@ static const uint8_t mrfiRadioCfg[][2] =
   {  MCSM0,     MRFI_SETTING_MCSM0        }, /* AUTO_CAL and XOSC state in sleep */
   {  PKTLEN,    MRFI_SETTING_PKTLEN       },
   {  PKTCTRL0,  MRFI_SETTING_PKTCTRL0     },
-#ifdef MRFI_CC1101
+#if defined( MRFI_CC1101 ) || defined( MRFI_CC110L )
   {  FIFOTHR,   MRFI_SETTING_FIFOTHR      },
 #endif
 
@@ -308,7 +311,6 @@ static const uint8_t mrfiRadioCfg[][2] =
   {  TEST0,     SMARTRF_SETTING_TEST0     },
 };
 
-
 /* ------------------------------------------------------------------------------------------------
  *                                       Local Prototypes
  * ------------------------------------------------------------------------------------------------
@@ -320,12 +322,12 @@ static void MRFI_CompleteTxPrep( mrfiPacket_t * );
 static int8_t Mrfi_CalculateRssi(uint8_t rawValue);
 
 #ifdef MRFI_TIMER_ALWAYS_ACTIVE
-//static void Mrfi_DelayUsecLong(uint32_t count, TimeoutTerminator_t term);
-static bool Mrfi_CheckSem( void );
-static bool Mrfi_ValidateRSSI( void );
+	//static void Mrfi_DelayUsecLong(uint32_t count, TimeoutTerminator_t term);
+	static bool Mrfi_CheckSem( void );
+	static bool Mrfi_ValidateRSSI( void );
 #else
-static void Mrfi_DelayUsec(uint16_t);
-static void Mrfi_DelayUsecSem(uint16_t howLong);
+	static void Mrfi_DelayUsec(uint16_t);
+	static void Mrfi_DelayUsecSem(uint16_t howLong);
 #endif
 static bool mrfi_TxCCADone( void );
 static bool mrfi_TxImmediateDone( void );
@@ -347,15 +349,15 @@ static          uint16_t sBackoffHelper = 0;
 static bool rx_isr_context = false;
 
 #ifdef MRFI_TIMER_ALWAYS_ACTIVE
-  static bool stx_active = false;
-  static MRFI_ms_event_t sOne_ms_event_hook = NULL;
-  static int32_t sTmrRateOffset = 0;
+	static bool stx_active = false;
+	static MRFI_ms_event_t sOne_ms_event_hook = NULL;
+	static int32_t sTmrRateOffset = 0;
   #if BSP_TIMER_SIZE == 8
-    static volatile uint8_t sTimerCntHi;
+	static volatile uint8_t sTimerCntHi;
   #endif
   #ifdef NWK_PLL
-    static mrfi_Time_t* sTxTimeStampAddr = NULL;
-    static mrfi_Time_t* sRxTimeStampAddr = NULL;
+	static mrfi_Time_t* sTxTimeStampAddr = NULL;
+	static mrfi_Time_t* sRxTimeStampAddr = NULL;
   #endif
 #endif
 
@@ -375,12 +377,17 @@ static bool rx_isr_context = false;
  * @return      none
  **************************************************************************************************
  */
+#define TIMEOUT_WAIT_SO_HIGH (SystemCoreClock / 1000ul)
+
 void MRFI_Init(void)
 {
+	uint32_t timeout;
+
 	/* ------------------------------------------------------------------
 	 *    Initialization
 	 *   -----------------
 	 */
+
 	memset(&mrfiIncomingPacket, 0x0, sizeof(mrfiIncomingPacket));
 
 	/* ------------------------------------------------------------------
@@ -393,7 +400,6 @@ void MRFI_Init(void)
 	Mrfi_TimerInit( );
 	sOne_ms_event_hook = NULL;
 #endif // MRFI_TIMER_ALWAYS_ACTIVE
-	
 	FHSS_ACTIVE( sHopCount = 0 );
 	FHSS_ACTIVE( sLogicalChannel = MRFI_RandomByte( ) % MRFI_NUM_LOGICAL_CHANS );
 	FHSS_ACTIVE( sHopNowSem = 0 );
@@ -404,7 +410,7 @@ void MRFI_Init(void)
 
 	/* initialize SPI */
 	mrfiSpiInit();
-
+	
 	/* ------------------------------------------------------------------
 	 *    Radio power-up reset
 	 *   ----------------------
@@ -421,14 +427,23 @@ void MRFI_Init(void)
 
 	/* pull CSn low and wait for SO to go low */
 	MRFI_SPI_DRIVE_CSN_LOW();
-	while (MRFI_SPI_SO_IS_HIGH());
+	
+	timeout = TIMEOUT_WAIT_SO_HIGH;
+	while (MRFI_SPI_SO_IS_HIGH())
+	{
+		MRFI_ASSERT( timeout-- );
+	}
 
 	/* directly send strobe command - cannot use function as it affects CSn pin */
 	MRFI_SPI_WRITE_BYTE(SRES);
 	MRFI_SPI_WAIT_DONE();
 
 	/* wait for SO to go low again, reset is complete at that point */
-	while (MRFI_SPI_SO_IS_HIGH());
+	timeout = TIMEOUT_WAIT_SO_HIGH;
+	while (MRFI_SPI_SO_IS_HIGH())
+	{
+		MRFI_ASSERT( timeout-- );
+	}
 
 	/* return CSn pin to its default high level */
 	MRFI_SPI_DRIVE_CSN_HIGH();
@@ -457,6 +472,7 @@ void MRFI_Init(void)
 	/* initialize radio registers */
 	{
 		uint8_t i;
+	
 		for (i = 0; i < (sizeof(mrfiRadioCfg) / sizeof(mrfiRadioCfg[0])); i++)
 		{
 			mrfiSpiWriteReg(mrfiRadioCfg[i][0], mrfiRadioCfg[i][1]);
@@ -489,7 +505,7 @@ void MRFI_Init(void)
 	/* use most random bit of rssi to populate the random seed */
 	{
 		uint8_t i;
-		for(i=0; i<16; i++)
+		for(i = 0; i < 16; i++)
 		{
 			mrfiRndSeed = (mrfiRndSeed << 1) | (mrfiSpiReadReg(RSSI) & 0x01);
 		}
@@ -531,6 +547,7 @@ void MRFI_Init(void)
 	*/
 #define   MRFI_RADIO_OSC_FREQ        26000000
 #define   PHY_PREAMBLE_SYNC_BYTES    8
+
 	{
 		uint32_t dataRate, bits;
 		uint16_t exponent, mantissa;
@@ -563,7 +580,7 @@ void MRFI_Init(void)
 	/* Clean out buffer to protect against spurious frames */
 	memset(mrfiIncomingPacket.frame, 0x00, sizeof(mrfiIncomingPacket.frame));
 	memset(mrfiIncomingPacket.rxMetrics, 0x00, sizeof(mrfiIncomingPacket.rxMetrics));
-	
+
 	/* ------------------------------------------------------------------
 	 *    Configure interrupts
 	 *   ----------------------
@@ -599,20 +616,20 @@ void MRFI_Init(void)
 static void MRFI_PrepareToTx( mrfiPacket_t * pPacket )
 {
 #ifdef MRFI_TIMER_ALWAYS_ACTIVE
-  stx_active = true; // indicate we are in the act of transmitting
+	stx_active = true; // indicate we are in the act of transmitting
 #endif // MRFI_TIMER_ALWAYS_ACTIVE
 
-   mrfiSpiCmdStrobe( SFTX ); // flush the tx fifo
+	mrfiSpiCmdStrobe( SFTX ); // flush the tx fifo
 
 #ifndef NWK_PLL
-  {
-    /* compute number of bytes to write to transmit FIFO */
+	{
+		/* compute number of bytes to write to transmit FIFO */
     uint8_t txBufLen = pPacket->frame[MRFI_LENGTH_FIELD_OFS]
                                                    + MRFI_LENGTH_FIELD_SIZE;
-    mrfiSpiWriteTxFifo(pPacket->frame, txBufLen);
-  }
+		mrfiSpiWriteTxFifo(pPacket->frame, txBufLen);
+	}
 #else // defined NWK_PLL
-  mrfiSpiWriteTxFifo(pPacket->frame, MRFI_PAYLOAD_OFFSET);
+	mrfiSpiWriteTxFifo(pPacket->frame, MRFI_PAYLOAD_OFFSET);
 #endif
   return;
 }
@@ -686,6 +703,11 @@ bool mrfi_TxImmediateDone( void )
   return MRFI_SYNC_PIN_INT_FLAG_IS_SET(); // || marc_state == RF_SM_RX || marc_state == RF_SM_IDLE;
 }
 
+
+#if defined(STM32F10X) || defined(STM32F2XX) || defined(STM32F4XX)
+extern uint8_t mrfi_ignore_interrupt;
+#endif
+
 /**************************************************************************************************
  * @fn          MRFI_Transmit
  *
@@ -702,228 +724,240 @@ bool mrfi_TxImmediateDone( void )
 uint8_t MRFI_Transmit(mrfiPacket_t * pPacket, uint8_t txType)
 {
 #ifdef NWK_PLL
-    bspIState_t s;
+	bspIState_t s;
 #endif
-  uint8_t ccaRetries;
-  uint8_t returnValue = MRFI_TX_RESULT_SUCCESS;
+	uint8_t ccaRetries;
+	uint8_t returnValue = MRFI_TX_RESULT_SUCCESS;
 
-  /* radio must be awake to transmit */
-  MRFI_ASSERT( mrfiRadioState != MRFI_RADIO_STATE_OFF );
+	/* radio must be awake to transmit */
+	MRFI_ASSERT( mrfiRadioState != MRFI_RADIO_STATE_OFF );
 
-  /* Turn off reciever. We can ignore/drop incoming packets during transmit. */
-  Mrfi_RxModeOff();
+	/* Turn off reciever. We can ignore/drop incoming packets during transmit. */
+	Mrfi_RxModeOff();
 
-  MRFI_PrepareToTx( pPacket );
+	MRFI_PrepareToTx( pPacket );
 
 
-  /* ------------------------------------------------------------------
-   *    Immediate transmit
-   *   ---------------------
-   */
-  if (txType == MRFI_TX_TYPE_FORCED)
-  {
+	/* ------------------------------------------------------------------
+	 *    Immediate transmit
+	 *   ---------------------
+	 */
+	if (txType == MRFI_TX_TYPE_FORCED)
+	{
 //#ifdef NWK_PLL
 //    BSP_ENTER_CRITICAL_SECTION(s);
 //#endif
 //    MRFI_CompleteTxPrep( pPacket );
 #ifdef NWK_PLL
-    do
-    {
-    BSP_ENTER_CRITICAL_SECTION(s);
-      if( stx_active == false ) // if the channel was changed
-      {
-        BSP_EXIT_CRITICAL_SECTION(s);
-        Mrfi_RxModeOff();            // turn off the radio
-        MRFI_PrepareToTx( pPacket ); // setup transmission again
-        continue; // restart the loop
-      }
-    MRFI_CompleteTxPrep( pPacket );
-    } while( 0 );
+		do
+		{
+			BSP_ENTER_CRITICAL_SECTION(s);
+			if( stx_active == false )		// if the channel was changed
+			{
+				BSP_EXIT_CRITICAL_SECTION(s);
+				Mrfi_RxModeOff();            // turn off the radio
+				MRFI_PrepareToTx( pPacket ); // setup transmission again
+				continue; // restart the loop
+			}
+			MRFI_CompleteTxPrep( pPacket );
+		} while( 0 );
 #endif
 
-    /* Issue the TX strobe. */
-    mrfiSpiCmdStrobe( STX );
+		/* Issue the TX strobe. */
+		mrfiSpiCmdStrobe( STX );
 #ifdef NWK_PLL
-    BSP_EXIT_CRITICAL_SECTION(s);
+		BSP_EXIT_CRITICAL_SECTION(s);
 #endif
 
-    /* Wait for transmit to complete */
-    Mrfi_DelayUsecLong( MRFI_MAX_TRANSMIT_TIME_us / 1000,
-                        MRFI_MAX_TRANSMIT_TIME_us % 1000,
-                        mrfi_TxImmediateDone );
+		/* Wait for transmit to complete */
+		Mrfi_DelayUsecLong( MRFI_MAX_TRANSMIT_TIME_us / 1000,
+							MRFI_MAX_TRANSMIT_TIME_us % 1000,
+							mrfi_TxImmediateDone );
 
-    /* Clear the interrupt flag */
-    MRFI_CLEAR_SYNC_PIN_INT_FLAG();
-  }
-  else
-  {
-    /* ------------------------------------------------------------------
-     *    CCA transmit
-     *   ---------------
-     */
+		/* Clear the interrupt flag */
+		MRFI_CLEAR_SYNC_PIN_INT_FLAG();
+	}
+	else
+	{
+		/* ------------------------------------------------------------------
+		 *    CCA transmit
+		 *   ---------------
+		 */
 
-    MRFI_ASSERT( txType == MRFI_TX_TYPE_CCA );
+		MRFI_ASSERT( txType == MRFI_TX_TYPE_CCA );
 
-    /* set number of CCA retries */
-    ccaRetries = MRFI_CCA_RETRIES;
+		/* set number of CCA retries */
+		ccaRetries = MRFI_CCA_RETRIES;
 
-    /* For CCA algorithm, we need to know the transition from the RX state to
-     * the TX state. There is no need for SYNC signal in this logic. So we
-     * can re-configure the GDO_0 output from the radio to be PA_PD signal
-     * instead of the SYNC signal.
-     * Since both SYNC and PA_PD are used as falling edge interrupts, we
-     * don't need to reconfigure the MCU input.
-     */
-    MRFI_CONFIG_GDO0_AS_PAPD_SIGNAL();
+		/* For CCA algorithm, we need to know the transition from the RX state to
+		 * the TX state. There is no need for SYNC signal in this logic. So we
+		 * can re-configure the GDO_0 output from the radio to be PA_PD signal
+		 * instead of the SYNC signal.
+		 * Since both SYNC and PA_PD are used as falling edge interrupts, we
+		 * don't need to reconfigure the MCU input.
+		 */
+		MRFI_CONFIG_GDO0_AS_PAPD_SIGNAL();
 
-    /* ===============================================================================
-     *    Main Loop
-     *  =============
-     */
-    for (;;)
-    {
-      /* Radio must be in RX mode for CCA to happen.
-       * Otherwise it will transmit without CCA happening.
-       */
+		/* ===============================================================================
+		 *    Main Loop
+		 *  =============
+		 */
+		for (;;)
+		{
+			/* Radio must be in RX mode for CCA to happen.
+			 * Otherwise it will transmit without CCA happening.
+			 */
 
-      /* Can not use the Mrfi_RxModeOn() function here since it turns on the
-       * Rx interrupt, which we don't want in this case.
-       */
-      mrfiSpiCmdStrobe( SRX );
+			/* Can not use the Mrfi_RxModeOn() function here since it turns on the
+			 * Rx interrupt, which we don't want in this case.
+			 */
+			mrfiSpiCmdStrobe( SRX );
 
-      /* wait for the rssi to be valid. */
+			/* wait for the rssi to be valid. */
 #ifdef MRFI_TIMER_ALWAYS_ACTIVE
-      MRFI_WaitTimeoutUsec(MRFI_RSSI_VALID_DELAY_US, Mrfi_ValidateRSSI);
+			MRFI_WaitTimeoutUsec(MRFI_RSSI_VALID_DELAY_US, Mrfi_ValidateRSSI);
 #else // MRFI_TIMER_ALWAYS_ACTIVE
-      MRFI_RSSI_VALID_WAIT();
+			MRFI_RSSI_VALID_WAIT();
 #endif // MRFI_TIMER_ALWAYS_ACTIVE
-#ifdef NWK_PLL
-        BSP_ENTER_CRITICAL_SECTION(s);
-        if( stx_active == false ) // if the channel was changed
-        {
-          BSP_EXIT_CRITICAL_SECTION(s);
-          Mrfi_RxModeOff();            // turn off the radio
-          MRFI_PrepareToTx( pPacket ); // setup transmission again
-          continue; // restart the cca loop
-        }
-
-      MRFI_CompleteTxPrep( pPacket );
-#endif
-
-      /*
-       *  Clear the PA_PD pin interrupt flag.  This flag, not the interrupt itself,
-       *  is used to capture the transition that indicates a transmit was started.
-       *  The pin level cannot be used to indicate transmit success as timing may
-       *  prevent the transition from being detected.  The interrupt latch captures
-       *  the event regardless of timing.
-       */
-      MRFI_CLEAR_PAPD_PIN_INT_FLAG();
-
-      /* Issue the TX strobe. */
-      mrfiSpiCmdStrobe( STX );
 
 #ifdef NWK_PLL
-      BSP_EXIT_CRITICAL_SECTION(s);
+			BSP_ENTER_CRITICAL_SECTION(s);
+			if( stx_active == false ) // if the channel was changed
+			{
+				BSP_EXIT_CRITICAL_SECTION(s);
+				Mrfi_RxModeOff();            // turn off the radio
+				MRFI_PrepareToTx( pPacket ); // setup transmission again
+				continue; // restart the cca loop
+			}
+
+			MRFI_CompleteTxPrep( pPacket );
 #endif
 
-      /* Delay long enough for the PA_PD signal to indicate a
-       * successful transmit. This is the 250 XOSC periods
-       * (9.6 us for a 26 MHz crystal) See section 19.6 of 2500 datasheet.
-       * Found out that we need a delay of atleast 20 us on CC2500 and
-       * 25 us on CC1100 to see the PA_PD signal change.
-       */
-      Mrfi_DelayUsec(25);
+			/*
+			 *  Clear the PA_PD pin interrupt flag.  This flag, not the interrupt itself,
+			 *  is used to capture the transition that indicates a transmit was started.
+			 *  The pin level cannot be used to indicate transmit success as timing may
+			 *  prevent the transition from being detected.  The interrupt latch captures
+			 *  the event regardless of timing.
+			 */
+			MRFI_CLEAR_PAPD_PIN_INT_FLAG();
+#if defined(STM32F10X) || defined(STM32F2XX) || defined(STM32F4XX)
+			mrfi_ignore_interrupt = 1;
+			MRFI_GDO0_INT_ENABLE();
+#endif
 
+			/* Issue the TX strobe. */
+			mrfiSpiCmdStrobe( STX );
 
-      /* PA_PD signal goes from HIGH to LOW when going from RX state.
-       * This transition is trapped as a falling edge interrupt flag
-       * to indicate that CCA passed and the transmit has started.
-       */
-      if (MRFI_PAPD_INT_FLAG_IS_SET())
-      {
-        /* ------------------------------------------------------------------
-        *    Clear Channel Assessment passed.
-        *   ----------------------------------
-        */
+#ifdef NWK_PLL
+			BSP_EXIT_CRITICAL_SECTION(s);
+#endif
 
-        /* Clear the PA_PD int flag */
-        MRFI_CLEAR_PAPD_PIN_INT_FLAG();
+			/* Delay long enough for the PA_PD signal to indicate a
+			 * successful transmit. This is the 250 XOSC periods
+			 * (9.6 us for a 26 MHz crystal) See section 19.6 of 2500 datasheet.
+			 * Found out that we need a delay of atleast 20 us on CC2500 and
+			 * 25 us on CC1100 to see the PA_PD signal change.
+			 */
+			Mrfi_DelayUsec(25);
 
-        Mrfi_DelayUsecLong( MRFI_MAX_TRANSMIT_TIME_us / 1000,
-                            MRFI_MAX_TRANSMIT_TIME_us % 1000,
-                            mrfi_TxCCADone );
+			/* PA_PD signal goes from HIGH to LOW when going from RX state.
+			 * This transition is trapped as a falling edge interrupt flag
+			 * to indicate that CCA passed and the transmit has started.
+			 */
+#if defined(STM32F10X) || defined(STM32F2XX) || defined(STM32F4XX)
+			if (mrfi_ignore_interrupt == 0)
+#else
+			if (MRFI_PAPD_INT_FLAG_IS_SET())
+#endif
+			{
+				/* ------------------------------------------------------------------
+				 *    Clear Channel Assessment passed.
+				 *   ----------------------------------
+				 */
 
-        /* transmit done, break */
-        break;
-      }
-      else
-      {
-        /* ------------------------------------------------------------------
-         *    Clear Channel Assessment failed.
-         *   ----------------------------------
-         */
+				/* Clear the PA_PD int flag */
+				MRFI_CLEAR_PAPD_PIN_INT_FLAG();
 
-        /* Turn off radio and save some power during backoff */
+				Mrfi_DelayUsecLong( MRFI_MAX_TRANSMIT_TIME_us / 1000,
+									MRFI_MAX_TRANSMIT_TIME_us % 1000,
+									mrfi_TxCCADone );
 
-        /* NOTE: Can't use Mrfi_RxModeOff() - since it tries to update the
-         * sync signal status which we are not using during the TX operation.
-         */
-        MRFI_STROBE_IDLE_AND_WAIT();
+				/* transmit done, break */
+				break;
+			}
+			else
+			{
+#if defined(STM32F10X) || defined(STM32F2XX) || defined(STM32F4XX)
+				MRFI_GDO0_INT_DISABLE();
+				mrfi_ignore_interrupt = 0;
+#endif
+				/* ------------------------------------------------------------------
+				 *    Clear Channel Assessment failed.
+				 *   ----------------------------------
+				 */
 
-        /* flush the receive FIFO of any residual data */
-        mrfiSpiCmdStrobe( SFRX );
+				/* Turn off radio and save some power during backoff */
 
-        /* Retry ? */
-        if (ccaRetries != 0)
-        {
+				/* NOTE: Can't use Mrfi_RxModeOff() - since it tries to update the
+				 * sync signal status which we are not using during the TX operation.
+				 */
+				MRFI_STROBE_IDLE_AND_WAIT();
+
+				/* flush the receive FIFO of any residual data */
+				mrfiSpiCmdStrobe( SFRX );
+
+				/* Retry ? */
+				if (ccaRetries != 0)
+				{
 #ifdef MRFI_TIMER_ALWAYS_ACTIVE
-          stx_active = false;
+					stx_active = false;
 #endif
-          /* delay for a random number of backoffs */
-          Mrfi_RandomBackoffDelay();
+					/* delay for a random number of backoffs */
+					Mrfi_RandomBackoffDelay();
 
-          MRFI_PrepareToTx( pPacket ); // setup transmission again
+					MRFI_PrepareToTx( pPacket ); // setup transmission again
 
-          /* decrement CCA retries before loop continues */
-          ccaRetries--;
-        }
-        else /* No CCA retries are left, abort */
-        {
-          /* set return value for failed transmit and break */
-          returnValue = MRFI_TX_RESULT_FAILED;
-          break;
-        }
-      } /* CCA Failed */
-    } /* CCA loop */
-  }/* txType is CCA */
+					/* decrement CCA retries before loop continues */
+					ccaRetries--;
+				}
+				else /* No CCA retries are left, abort */
+				{
+					/* set return value for failed transmit and break */
+					returnValue = MRFI_TX_RESULT_FAILED;
+					break;
+				}
+			} /* CCA Failed */
+		} /* CCA loop */
+	} /* txType is CCA */
 
-  /* Done with TX. Clean up time... */
+	/* Done with TX. Clean up time... */
 
-  /* Radio is already in IDLE state */
+	/* Radio is already in IDLE state */
 
 #ifdef NWK_PLL
-  stx_active = false;
-  // Packet transmitted, regardless of packet type, remove reference.
-  sTxTimeStampAddr = NULL;
+	stx_active = false;
+	// Packet transmitted, regardless of packet type, remove reference.
+	sTxTimeStampAddr = NULL;
 #endif
-  /*
-   * Flush the transmit FIFO.  It must be flushed so that
-   * the next transmit can start with a clean slate.
-   */
-  mrfiSpiCmdStrobe( SFTX );
+	/*
+	 * Flush the transmit FIFO.  It must be flushed so that
+	 * the next transmit can start with a clean slate.
+	 */
+	mrfiSpiCmdStrobe( SFTX );
 
-  /* Restore GDO_0 to be SYNC signal */
-  MRFI_CONFIG_GDO0_AS_SYNC_SIGNAL();
+	/* Restore GDO_0 to be SYNC signal */
+	MRFI_CONFIG_GDO0_AS_SYNC_SIGNAL();
 
-  /* If the radio was in RX state when transmit was attempted,
-   * put it back to Rx On state.
-   */
-  if(mrfiRadioState == MRFI_RADIO_STATE_RX)
-  {
-    Mrfi_RxModeOn();
-  }
+	/* If the radio was in RX state when transmit was attempted,
+	 * put it back to Rx On state.
+	 */
+	if (mrfiRadioState == MRFI_RADIO_STATE_RX)
+	{
+		Mrfi_RxModeOn();
+	}
 
-  return( returnValue );
+	return( returnValue );
 }
 
 
@@ -987,13 +1021,17 @@ static void Mrfi_SyncPinRxIsr(void)
 	 */
 	{
 		uint8_t rxBytesVerify;
+
 		rxBytesVerify = mrfiSpiReadReg( RXBYTES );
-		do {
+
+    do
+    {
 			rxBytes = rxBytesVerify;
 			rxBytesVerify = mrfiSpiReadReg( RXBYTES );
 		}
 		while (rxBytes != rxBytesVerify);
 	}
+
 
 	/* ------------------------------------------------------------------
 	 *    FIFO empty?
@@ -1043,9 +1081,9 @@ static void Mrfi_SyncPinRxIsr(void)
 		 *
 		 *  Also check the sanity of the length to guard against rogue frames.
 		 */
-		if ((rxBytes != (frameLen + MRFI_LENGTH_FIELD_SIZE + MRFI_RX_METRICS_SIZE))
-		||	((frameLen + MRFI_LENGTH_FIELD_SIZE) > MRFI_MAX_FRAME_SIZE)
-		||	(frameLen < MRFI_MIN_SMPL_FRAME_SIZE)
+    if ((rxBytes != (frameLen + MRFI_LENGTH_FIELD_SIZE + MRFI_RX_METRICS_SIZE))           ||
+        ((frameLen + MRFI_LENGTH_FIELD_SIZE) > MRFI_MAX_FRAME_SIZE) ||
+        (frameLen < MRFI_MIN_SMPL_FRAME_SIZE)
 			)
 		{
 			bspIState_t s;
@@ -1085,14 +1123,18 @@ static void Mrfi_SyncPinRxIsr(void)
 			/* get receive metrics from FIFO */
 			mrfiSpiReadRxFifo(&(mrfiIncomingPacket.rxMetrics[0]), MRFI_RX_METRICS_SIZE);
 
-			MRFI_DISABLE_SYNC_PIN_INT( ); // disable radio sync interrupt so no more occur
-			rx_isr_context = true;        // deactivate sync pin interrupt enable/disable macros
-			BSP_ENABLE_INTERRUPTS( );     // enable interrupts so higher priority irqs can occur
+
+			MRFI_DISABLE_SYNC_PIN_INT();	// disable radio sync interrupt so no more occur
+			rx_isr_context = true;			// deactivate sync pin interrupt enable/disable macros
+		#if !defined(STM32F10X) && !defined(STM32F2XX) && !defined(STM32F4XX)
+			BSP_ENABLE_INTERRUPTS();		// enable interrupts so higher priority irqs can occur
+		#endif
 
 			/* ------------------------------------------------------------------
 			 *    CRC check
 			 *   ------------
 			 */
+
 			/*
 			 *  Note!  Automatic CRC check is not, and must not, be enabled.  This feature
 			 *  flushes the *entire* receive FIFO when CRC fails.  If this feature is
@@ -1133,14 +1175,17 @@ static void Mrfi_SyncPinRxIsr(void)
 						mrfiIncomingPacket.rxMetrics[MRFI_RX_METRICS_CRC_LQI_OFS] =
 							(mrfiIncomingPacket.rxMetrics[MRFI_RX_METRICS_CRC_LQI_OFS] & MRFI_RX_METRICS_LQI_MASK);
 
+
 						/* call external, higher level "receive complete" processing routine */
 						MRFI_RxCompleteISR();
 					}
 				}
 			}
-			BSP_DISABLE_INTERRUPTS( );    // disable interrupts so we can enable radio sync interrupt again
-			rx_isr_context = false;       // activate sync pin interrupt enable/disable macros
-			MRFI_ENABLE_SYNC_PIN_INT( );  // enable radio sync interrupt again
+		#if !defined(STM32F10X) && !defined(STM32F2XX) && !defined(STM32F4XX)
+			BSP_DISABLE_INTERRUPTS( );	// disable interrupts so we can enable radio sync interrupt again
+		#endif
+			rx_isr_context = false;		// activate sync pin interrupt enable/disable macros
+			MRFI_ENABLE_SYNC_PIN_INT();	// enable radio sync interrupt again
 		}
 	}
 
@@ -1189,15 +1234,15 @@ static void Mrfi_RxModeOn(void)
  */
 void MRFI_RxOn(void)
 {
-  /* radio must be awake before we can move it to RX state */
-  MRFI_ASSERT( mrfiRadioState != MRFI_RADIO_STATE_OFF );
+	/* radio must be awake before we can move it to RX state */
+	MRFI_ASSERT( mrfiRadioState != MRFI_RADIO_STATE_OFF );
 
-  /* if radio is off, turn it on */
-  if(mrfiRadioState != MRFI_RADIO_STATE_RX)
-  {
-    mrfiRadioState = MRFI_RADIO_STATE_RX;
-    Mrfi_RxModeOn();
-  }
+	/* if radio is off, turn it on */
+	if(mrfiRadioState != MRFI_RADIO_STATE_RX)
+	{
+		mrfiRadioState = MRFI_RADIO_STATE_RX;
+		Mrfi_RxModeOn();
+	}
 }
 
 /**************************************************************************************************
@@ -1212,20 +1257,20 @@ void MRFI_RxOn(void)
  */
 static void Mrfi_RxModeOff(void)
 {
-  /* disable receive interrupts */
-  MRFI_DISABLE_SYNC_PIN_INT();
+	/* disable receive interrupts */
+	MRFI_DISABLE_SYNC_PIN_INT();
 
-  /* turn off radio */
-  MRFI_STROBE_IDLE_AND_WAIT();
+	/* turn off radio */
+	MRFI_STROBE_IDLE_AND_WAIT();
 
-  /* flush the receive FIFO of any residual data */
-  mrfiSpiCmdStrobe( SFRX );
+	/* flush the receive FIFO of any residual data */
+	mrfiSpiCmdStrobe( SFRX );
 
-  /* clear receive interrupt */
-  MRFI_CLEAR_SYNC_PIN_INT_FLAG();
+	/* clear receive interrupt */
+	MRFI_CLEAR_SYNC_PIN_INT_FLAG();
 
 #ifdef MRFI_TIMER_ALWAYS_ACTIVE
-  stx_active = false; // indicate we're not in transmit
+	stx_active = false; // indicate we're not in transmit
 #endif // MRFI_TIMER_ALWAYS_ACTIVE
 }
 
@@ -1243,15 +1288,15 @@ static void Mrfi_RxModeOff(void)
  */
 void MRFI_RxIdle(void)
 {
-  /* radio must be awake to move it to idle mode */
-  MRFI_ASSERT( mrfiRadioState != MRFI_RADIO_STATE_OFF );
+	/* radio must be awake to move it to idle mode */
+	MRFI_ASSERT( mrfiRadioState != MRFI_RADIO_STATE_OFF );
 
-  /* if radio is on, turn it off */
-  if(mrfiRadioState == MRFI_RADIO_STATE_RX)
-  {
-    Mrfi_RxModeOff();
-    mrfiRadioState = MRFI_RADIO_STATE_IDLE;
-  }
+	/* if radio is on, turn it off */
+	if(mrfiRadioState == MRFI_RADIO_STATE_RX)
+	{
+		Mrfi_RxModeOff();
+		mrfiRadioState = MRFI_RADIO_STATE_IDLE;
+	}
 }
 
 
@@ -1302,37 +1347,37 @@ void MRFI_Sleep(void)
  */
 void MRFI_WakeUp(void)
 {
-  /* if radio is already awake, just ignore wakeup request */
-  if(mrfiRadioState != MRFI_RADIO_STATE_OFF)
-  {
-    return;
-  }
+	/* if radio is already awake, just ignore wakeup request */
+	if(mrfiRadioState != MRFI_RADIO_STATE_OFF)
+	{
+		return;
+	}
 
-  /* drive CSn low to initiate wakeup */
-  MRFI_SPI_DRIVE_CSN_LOW();
+	/* drive CSn low to initiate wakeup */
+	MRFI_SPI_DRIVE_CSN_LOW();
 
-  /* wait for MISO to go high indicating the oscillator is stable */
-  while (MRFI_SPI_SO_IS_HIGH());
+	/* wait for MISO to go high indicating the oscillator is stable */
+	while (MRFI_SPI_SO_IS_HIGH());
 
-  /* wakeup is complete, drive CSn high and continue */
-  MRFI_SPI_DRIVE_CSN_HIGH();
+	/* wakeup is complete, drive CSn high and continue */
+	MRFI_SPI_DRIVE_CSN_HIGH();
 
-/*
- *  The test registers must be restored after sleep for the CC1100 and CC2500 radios.
- *  This is not required for the CC1101 radio.
- */
-#ifndef MRFI_CC1101
-  mrfiSpiWriteReg( TEST2, SMARTRF_SETTING_TEST2 );
-  mrfiSpiWriteReg( TEST1, SMARTRF_SETTING_TEST1 );
-  mrfiSpiWriteReg( TEST0, SMARTRF_SETTING_TEST0 );
+	/*
+	 *  The test registers must be restored after sleep for the CC1100 and CC2500 radios.
+	 *  This is not required for the CC1101 radio.
+	 */
+#if !defined( MRFI_CC1101 ) && !defined( MRFI_CC110L )
+	mrfiSpiWriteReg( TEST2, SMARTRF_SETTING_TEST2 );
+	mrfiSpiWriteReg( TEST1, SMARTRF_SETTING_TEST1 );
+	mrfiSpiWriteReg( TEST0, SMARTRF_SETTING_TEST0 );
 #endif
 
-  /* enter idle mode */
-  mrfiRadioState = MRFI_RADIO_STATE_IDLE;
-  MRFI_STROBE_IDLE_AND_WAIT();
+	/* enter idle mode */
+	mrfiRadioState = MRFI_RADIO_STATE_IDLE;
+	MRFI_STROBE_IDLE_AND_WAIT();
 
 #ifdef MRFI_TIMER_ALWAYS_ACTIVE
-  stx_active = false; // indicate we're not in transmit
+	stx_active = false; // indicate we're not in transmit
 #endif // MRFI_TIMER_ALWAYS_ACTIVE
 }
 
@@ -1360,6 +1405,7 @@ void MRFI_GpioIsr(void)
 	 */
 	if( sRxTimeStampAddr != NULL )
 		MRFI_GetLocalRawTime( sRxTimeStampAddr );
+
 #endif
 
 	/* see if sync pin interrupt is enabled and has fired */
@@ -1375,9 +1421,11 @@ void MRFI_GpioIsr(void)
 		 *  naturally but it must be verified for every target.
 		 */
 		MRFI_CLEAR_SYNC_PIN_INT_FLAG();
+
 		Mrfi_SyncPinRxIsr();
 	}
 }
+
 
 /**************************************************************************************************
  * @fn          MRFI_Rssi
@@ -1447,6 +1495,7 @@ int8_t Mrfi_CalculateRssi(uint8_t rawValue)
 	{
 		rssi = -128;
 	}
+
 	return rssi;
 }
 
@@ -1465,6 +1514,7 @@ int8_t Mrfi_CalculateRssi(uint8_t rawValue)
 uint8_t MRFI_RandomByte(void)
 {
 	mrfiRndSeed = (mrfiRndSeed*MRFI_RANDOM_MULTIPLIER) + MRFI_RANDOM_OFFSET;
+
 	return mrfiRndSeed;
 }
 
@@ -1846,16 +1896,16 @@ void MRFI_GetTimeDelta( mrfi_Time_t* dest, mrfi_Time_t* start, mrfi_Time_t* end 
  */
 void MRFI_SetTime( mrfi_Time_t* t )
 {
-  bspIState_t s;
-  BSP_ENTER_CRITICAL_SECTION( s );
+	bspIState_t s;
+	BSP_ENTER_CRITICAL_SECTION( s );
 
-  // fill in the non timer values, don't worry about the timer values as they are
-  // fractional and this should get us close enough.
+	// fill in the non timer values, don't worry about the timer values as they are
+	// fractional and this should get us close enough.
     MRFI_Time = t->milliseconds;
     FHSS_ACTIVE( sHopCount = t->hopCount );
     FHSS_ACTIVE( sLogicalChannel = t->logicalChnl );
 
-  BSP_EXIT_CRITICAL_SECTION( s );
+	BSP_EXIT_CRITICAL_SECTION( s );
 
   return;
 }
@@ -2073,8 +2123,8 @@ bail: // jump to here on early exit
  */
 static void Mrfi_DelayUsecSem(uint16_t howLong)
 {
-  Mrfi_DelayUsecLong( 0, howLong, Mrfi_CheckSem ); // delay with semaphore dependency
-  return; // time out complete
+	Mrfi_DelayUsecLong( 0, howLong, Mrfi_CheckSem ); // delay with semaphore dependency
+	return; // time out complete
 }
 
 /****************************************************************************************************
@@ -2090,7 +2140,7 @@ static void Mrfi_DelayUsecSem(uint16_t howLong)
  */
 static bool Mrfi_CheckSem( void )
 {
-  return sKillSem;
+	return sKillSem;
 }
 
 
@@ -2107,11 +2157,11 @@ static bool Mrfi_CheckSem( void )
  */
 void MRFI_ReplyDelay()
 {
-  static int c = 0;
-  c++;
-  BSP_CRITICAL_STATEMENT( sReplyDelayContext = 1 );
-  Mrfi_DelayUsecLong( sReplyDelayScalar, 0, Mrfi_CheckSem );
-  BSP_CRITICAL_STATEMENT( sKillSem = sReplyDelayContext = 0 );
+	static int c = 0;
+	c++;
+	BSP_CRITICAL_STATEMENT( sReplyDelayContext = 1 );
+	Mrfi_DelayUsecLong( sReplyDelayScalar, 0, Mrfi_CheckSem );
+	BSP_CRITICAL_STATEMENT( sKillSem = sReplyDelayContext = 0 );
 }
 
 #else // MRFI_TIMER_ALWAYS_ACTIVE
@@ -2146,6 +2196,8 @@ static void Mrfi_DelayUsec(uint16_t howLong)
 			BSP_EXIT_CRITICAL_SECTION(s);
 		} while (count--);
 	}
+
+  return;
 }
 
 /****************************************************************************************************
@@ -2165,22 +2217,22 @@ static void Mrfi_DelayUsec(uint16_t howLong)
  */
 static void Mrfi_DelayUsecSem(uint16_t howLong)
 {
-  bspIState_t s;
-  uint16_t count = howLong/MRFI_MAX_DELAY_US;
+	bspIState_t s;
+	uint16_t count = howLong / MRFI_MAX_DELAY_US;
 
-  if (howLong)
-  {
-    do
-    {
-      BSP_ENTER_CRITICAL_SECTION(s);
-      BSP_DELAY_USECS(MRFI_MAX_DELAY_US);
-      BSP_EXIT_CRITICAL_SECTION(s);
-      if (sKillSem)
-      {
-        break;
-      }
-    } while (count--);
-  }
+	if (howLong)
+	{
+		do
+		{
+			BSP_ENTER_CRITICAL_SECTION(s);
+			BSP_DELAY_USECS(MRFI_MAX_DELAY_US);
+			BSP_EXIT_CRITICAL_SECTION(s);
+			if (sKillSem)
+			{
+				break;
+			}
+		} while (count--);
+	}
 
   return;
 }
@@ -2206,36 +2258,36 @@ static void Mrfi_DelayUsecSem(uint16_t howLong)
  */
 bool Mrfi_DelayUsecLong(uint32_t ms, uint16_t us, TimeoutTerminator_t term)
 {
-  bool timeout = false;
-  bspIState_t s;
-  uint16_t count;
+	bool timeout = false;
+	bspIState_t s;
+	uint16_t count;
 
-  while (!timeout && ms)
-  {
-    count = APP_USEC_VALUE / MRFI_MAX_DELAY_US;
-    do
-    {
-      BSP_ENTER_CRITICAL_SECTION(s);
-      BSP_DELAY_USECS(MRFI_MAX_DELAY_US);
-      BSP_EXIT_CRITICAL_SECTION(s);
-      if (term != NULL)
-        timeout = term( );
-    } while (!timeout && count--);
-    ms--;
-  }
-  count = us/MRFI_MAX_DELAY_US;
-  if (!timeout && us)
-  {
-    do
-    {
-      BSP_ENTER_CRITICAL_SECTION(s);
-      BSP_DELAY_USECS(MRFI_MAX_DELAY_US);
-      BSP_EXIT_CRITICAL_SECTION(s);
-      if (term != NULL)
-        timeout = term( );
-    } while (!timeout && count--);
-  }
-  return timeout;
+	while (!timeout && ms)
+	{
+		count = APP_USEC_VALUE / MRFI_MAX_DELAY_US;
+		do
+		{
+			BSP_ENTER_CRITICAL_SECTION(s);
+			BSP_DELAY_USECS(MRFI_MAX_DELAY_US);
+			BSP_EXIT_CRITICAL_SECTION(s);
+			if (term != NULL)
+			timeout = term( );
+		} while (!timeout && count--);
+		ms--;
+	}
+	count = us/MRFI_MAX_DELAY_US;
+	if (!timeout && us)
+	{
+		do
+		{
+			BSP_ENTER_CRITICAL_SECTION(s);
+			BSP_DELAY_USECS(MRFI_MAX_DELAY_US);
+			BSP_EXIT_CRITICAL_SECTION(s);
+			if (term != NULL)
+				timeout = term( );
+		} while (!timeout && count--);
+	}
+	return timeout;
 }
 
 /**************************************************************************************************
@@ -2250,11 +2302,11 @@ bool Mrfi_DelayUsecLong(uint32_t ms, uint16_t us, TimeoutTerminator_t term)
  */
 void MRFI_DelayMs(uint16_t milliseconds)
 {
-  while (milliseconds)
-  {
-    Mrfi_DelayUsec( APP_USEC_VALUE );
-    milliseconds--;
-  }
+	while (milliseconds)
+	{
+		Mrfi_DelayUsec( APP_USEC_VALUE );
+		milliseconds--;
+	}
 }
 
 /**************************************************************************************************
@@ -2272,27 +2324,27 @@ void MRFI_DelayMs(uint16_t milliseconds)
  */
 void MRFI_ReplyDelay()
 {
-  bspIState_t s;
-  uint16_t    milliseconds = sReplyDelayScalar;
+	bspIState_t s;
+	uint16_t    milliseconds = sReplyDelayScalar;
 
-  BSP_ENTER_CRITICAL_SECTION(s);
-  sReplyDelayContext = 1;
-  BSP_EXIT_CRITICAL_SECTION(s);
+	BSP_ENTER_CRITICAL_SECTION(s);
+	sReplyDelayContext = 1;
+	BSP_EXIT_CRITICAL_SECTION(s);
 
-  while (milliseconds)
-  {
-    Mrfi_DelayUsecSem( APP_USEC_VALUE );
-    if (sKillSem)
-    {
-      break;
-    }
-    milliseconds--;
-  }
+	while (milliseconds)
+	{
+		Mrfi_DelayUsecSem( APP_USEC_VALUE );
+		if (sKillSem)
+		{
+			break;
+		}
+		milliseconds--;
+	}
 
-  BSP_ENTER_CRITICAL_SECTION(s);
-  sKillSem           = 0;
-  sReplyDelayContext = 0;
-  BSP_EXIT_CRITICAL_SECTION(s);
+	BSP_ENTER_CRITICAL_SECTION(s);
+	sKillSem           = 0;
+	sReplyDelayContext = 0;
+	BSP_EXIT_CRITICAL_SECTION(s);
 }
 #endif // MRFI_TIMER_ALWAYS_ACTIVE
 
@@ -2310,10 +2362,10 @@ void MRFI_ReplyDelay()
 void MRFI_PostKillSem(void)
 {
 
-  if (sReplyDelayContext)
-  {
-    sKillSem = 1;
-  }
+	if (sReplyDelayContext)
+	{
+		sKillSem = 1;
+	}
 
   return;
 }
@@ -2330,7 +2382,7 @@ void MRFI_PostKillSem(void)
  */
 uint8_t MRFI_GetRadioState(void)
 {
-  return mrfiRadioState;
+	return mrfiRadioState;
 }
 
 #ifdef MRFI_TIMER_ALWAYS_ACTIVE
@@ -2350,52 +2402,52 @@ uint8_t MRFI_GetRadioState(void)
  */
 BSP_ISR_FUNCTION(Mrfi_TimerISR, BSP_TIMER_VECTOR)
 {
-  {
-    static union{ int32_t modulation; int8_t bytes[4]; };
-    modulation += sTmrRateOffset;
-    {
-      uint16_t limit = bytes[3];
-      limit += MRFI_ROLLOVER_LIMIT;
-      BSP_TIMER_SET_OVERFLOW_VALUE( limit );
-    }
-    bytes[3] = 0; // clear upper byte
-  }
+	{
+		static union { int32_t modulation; int8_t bytes[4]; };
+		modulation += sTmrRateOffset;
+		{
+			uint16_t limit = bytes[3];
+			limit += MRFI_ROLLOVER_LIMIT;
+			BSP_TIMER_SET_OVERFLOW_VALUE( limit );
+		}
+		bytes[3] = 0; // clear upper byte
+	}
 
-  MRFI_Time++;
+	MRFI_Time++;
 
 #ifdef FREQUENCY_HOPPING
-  if( sHopCount == 0 ) /* if ready to hop frequencies */
-  {
-    sHopCount = sHopRate;
-    sHopNowSem = 1; /* indicate a frequency change is due */
+	if( sHopCount == 0 ) /* if ready to hop frequencies */
+	{
+		sHopCount = sHopRate;
+		sHopNowSem = 1; /* indicate a frequency change is due */
 
-    // manage the channel indexer in the isr so if a semaphore is missed,
-    // the channel index is always up to date with the current channel
-    sLogicalChannel++; // increment the channel index
+		// manage the channel indexer in the isr so if a semaphore is missed,
+		// the channel index is always up to date with the current channel
+		sLogicalChannel++; // increment the channel index
 
-    // check to see if the channel index is rolling over
-    #if MRFI_NUM_LOGICAL_CHANS <= 255
-      if( sLogicalChannel >= MRFI_NUM_LOGICAL_CHANS )
-        sLogicalChannel = 0;
-    #endif
+		// check to see if the channel index is rolling over
+	#if MRFI_NUM_LOGICAL_CHANS <= 255
+		if( sLogicalChannel >= MRFI_NUM_LOGICAL_CHANS )
+			sLogicalChannel = 0;
+	#endif
 
-  }
-  else /* if not ready to hop */
-    sHopCount--; /* decrement hop counter */
+	}
+	else /* if not ready to hop */
+		sHopCount--; /* decrement hop counter */
 
-  if( sHopCount > FHSS_HOP_MARGIN + 2
-      && sHopCount < MRFI_HOP_TIME_ms - 1 - FHSS_HOP_MARGIN )
-    sTxValid = true;
-  else
-    sTxValid = false;
+	if( sHopCount > FHSS_HOP_MARGIN + 2
+		&& sHopCount < MRFI_HOP_TIME_ms - 1 - FHSS_HOP_MARGIN )
+		sTxValid = true;
+	else
+		sTxValid = false;
 #endif
 
-  if( sOne_ms_event_hook != NULL ) /* if a 1 millisecond hook function exists */
-    sOne_ms_event_hook( ); /* then call it */
+	if( sOne_ms_event_hook != NULL ) /* if a 1 millisecond hook function exists */
+		sOne_ms_event_hook( ); /* then call it */
 
-  BSP_TIMER_CLEAR_OVERFLOW_FLAG( ); /* clear the event */
+	BSP_TIMER_CLEAR_OVERFLOW_FLAG( ); /* clear the event */
 
-  return;
+	return;
 }
 
 #endif // MRFI_TIMER_ALWAYS_ACTIVE
@@ -2410,15 +2462,16 @@ BSP_ISR_FUNCTION(Mrfi_TimerISR, BSP_TIMER_VECTOR)
 
 /* verify largest possible packet fits within FIFO buffer */
 #if ((MRFI_MAX_FRAME_SIZE + MRFI_RX_METRICS_SIZE) > MRFI_RADIO_TX_FIFO_SIZE)
-#error "ERROR:  Maximum possible packet length exceeds FIFO buffer.  Decrease value of maximum application payload."
+	#error "ERROR:  Maximum possible packet length exceeds FIFO buffer.  Decrease value of maximum application payload."
 #endif
 
 /* verify that the SmartRF file supplied is compatible */
-#if ((!defined SMARTRF_RADIO_CC2500) && \
-     (!defined SMARTRF_RADIO_CC1100) && \
-     (!defined SMARTRF_RADIO_CC1101) && \
-     (!defined SMARTRF_RADIO_CC1100E))
-#error "ERROR:  The SmartRF export file is not compatible."
+#if ((!defined SMARTRF_RADIO_CC2500)	&& \
+	 (!defined SMARTRF_RADIO_CC1100)	&& \
+	 (!defined SMARTRF_RADIO_CC1101)	&& \
+	 (!defined SMARTRF_RADIO_CC110L)	&& \
+	 (!defined SMARTRF_RADIO_CC1100E))
+	#error "ERROR:  The SmartRF export file is not compatible."
 #endif
 
 /*

@@ -95,6 +95,8 @@ static void handlePingRequest(mrfiPacket_t *);
 void nwk_pingInit(void)
 {
 	sTid = MRFI_RandomByte();
+
+  return;
 }
 
 /******************************************************************************

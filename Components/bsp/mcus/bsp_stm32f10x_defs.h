@@ -74,11 +74,11 @@ uint8_t			gpioPinOut	(uint8_t pin);
 uint8_t			gpioPinIn	(uint8_t pin);
 void			gpioPinConfig(uint16_t mode_pin);
 
-#define __bsp_PIN_LOW__(pin)			gpioPinLow(pin)
-#define __bsp_PIN_HIGH__(pin)			gpioPinHigh(pin)
-#define __bsp_PIN_OUT__(pin)			gpioPinOut(pin)
-#define __bsp_PIN_IN__(pin)				gpioPinIn(pin)
-#define __bsp_PIN_CONFIG__(pin,mode)	gpioPinConfig((mode << 8) | pin)
+#define __bsp_PIN_LOW__(pin)			gpioPinLow	(pin)
+#define __bsp_PIN_HIGH__(pin)			gpioPinHigh	(pin)
+#define __bsp_PIN_OUT__(pin)			gpioPinOut	(pin)
+#define __bsp_PIN_IN__(pin)				gpioPinIn	(pin)
+#define __bsp_PIN_CONFIG__(pin,mode)	gpioPinConfig	((mode << 8) | pin)
 
 #define PIN_MODE_AF_50		(((uint32_t)GPIO_Mode_AF_PP | (uint32_t)GPIO_Speed_50MHz))
 #define PIN_MODE_IN			((uint32_t)GPIO_Mode_IN_FLOATING)
@@ -119,11 +119,10 @@ void			gpioPinConfig(uint16_t mode_pin);
 
 	#include <stm32f10x.h>
 
-	#define __bsp_QUOTED_PRAGMA__(x)
-	#define __bsp_ISTATE_T__            int
 	#define __interrupt
-	#define __bsp_ISR_FUNCTION__(f,v)   __bsp_QUOTED_PRAGMA__(vector=v) __interrupt void f(void)
-
+	#define __bsp_QUOTED_PRAGMA__(x)
+	#define __bsp_ISTATE_T__	int
+	#define __bsp_ISR_FUNCTION__(f,v)			__bsp_QUOTED_PRAGMA__(vector=v) __interrupt void f(void)
 	#define BSP_EARLY_INIT(void)				int _system_pre_init(void)
 	#define __bsp_GET_ISTATE__()				__disable_irq()
 	#define __bsp_RESTORE_ISTATE__(x)			if (!x) __enable_irq();

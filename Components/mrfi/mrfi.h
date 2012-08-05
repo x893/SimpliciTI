@@ -99,31 +99,31 @@
  * ********************************************************************************
  */
 #ifndef SMPL_SECURE
-#define  NWK_HDR_SIZE   3
-#define  NWK_PAYLOAD    MAX_NWK_PAYLOAD
+	#define  NWK_HDR_SIZE   3
+	#define  NWK_PAYLOAD    MAX_NWK_PAYLOAD
 #else
-#define  NWK_HDR_SIZE   6
-#define  NWK_PAYLOAD    (MAX_NWK_PAYLOAD+4)
+	#define  NWK_HDR_SIZE   6
+	#define  NWK_PAYLOAD    (MAX_NWK_PAYLOAD+4)
 #endif
 
 /* if external code has defined a maximum payload, use that instead of default */
 #ifdef MAX_APP_PAYLOAD
-#ifndef MAX_NWK_PAYLOAD
-#error ERROR: MAX_NWK_PAYLOAD not defined
-#endif
-#if MAX_APP_PAYLOAD < NWK_PAYLOAD
-#define MAX_PAYLOAD  NWK_PAYLOAD
-#else
-#define MAX_PAYLOAD  MAX_APP_PAYLOAD
-#endif
-#define MRFI_MAX_PAYLOAD_SIZE  (MAX_PAYLOAD+NWK_HDR_SIZE) /* SimpliciTI payload size plus six byte overhead */
+	#ifndef MAX_NWK_PAYLOAD
+		#error ERROR: MAX_NWK_PAYLOAD not defined
+	#endif
+	#if MAX_APP_PAYLOAD < NWK_PAYLOAD
+		#define MAX_PAYLOAD  NWK_PAYLOAD
+	#else
+		#define MAX_PAYLOAD  MAX_APP_PAYLOAD
+	#endif
+	#define MRFI_MAX_PAYLOAD_SIZE  (MAX_PAYLOAD+NWK_HDR_SIZE) /* SimpliciTI payload size plus six byte overhead */
 #endif
 
 
 /* frame definitions */
 #define MRFI_ADDR_SIZE              __mrfi_ADDR_SIZE__
 #ifndef MRFI_MAX_PAYLOAD_SIZE
-#define MRFI_MAX_PAYLOAD_SIZE       __mrfi_MAX_PAYLOAD_SIZE__
+	#define MRFI_MAX_PAYLOAD_SIZE       __mrfi_MAX_PAYLOAD_SIZE__
 #endif
 #define MRFI_MAX_FRAME_SIZE         (MRFI_MAX_PAYLOAD_SIZE + __mrfi_FRAME_OVERHEAD_SIZE__)
 #define MRFI_RX_METRICS_SIZE        __mrfi_RX_METRICS_SIZE__
@@ -152,7 +152,7 @@
  * to operate properly.
  */
 #if defined FREQUENCY_HOPPING && !defined MRFI_TIMER_ALWAYS_ACTIVE
-  #define MRFI_TIMER_ALWAYS_ACTIVE
+	#define MRFI_TIMER_ALWAYS_ACTIVE
 #endif
 
 #ifdef MRFI_TIMER_ALWAYS_ACTIVE
@@ -167,35 +167,35 @@
    *      8 bytes   =   8919 years 147 days 11 hours 31 minutes 50.656 seconds
    *      where 1 year = 365.25 days and century leap years are ignored.
    */
-  #ifndef MRFI_TIME_SIZE
-    #define MRFI_TIME_SIZE 6
-  #endif
-  #if MRFI_TIME_SIZE < 5
-    #error "ERROR: MRFI_TIME_SIZE must be at least a value of 5."
-  #endif
+	#ifndef MRFI_TIME_SIZE
+		#define MRFI_TIME_SIZE 6
+	#endif
+	#if MRFI_TIME_SIZE < 5
+		#error "ERROR: MRFI_TIME_SIZE must be at least a value of 5."
+	#endif
 
-  // the number of bytes in the hop count array in the mrfi_Time_t structure
-  #define MRFI_HOP_COUNT_SIZE 2
+	// the number of bytes in the hop count array in the mrfi_Time_t structure
+	#define MRFI_HOP_COUNT_SIZE 2
 
 /* the number of bytes the physical timer represents in the time array.
  * NOTE: the timer size is 2 for both 8 and 16 bit timers but may need to be
  *       different for larger timers if we ever encounter them.
  */
-  #if BSP_TIMER_SIZE == 8 || BSP_TIMER_SIZE == 16
-    #define MRFI_TIMER_SZ 2
-  #endif
-  #define MRFI_ROLLOVER_LIMIT  ( BSP_ROLLOVER_LIMIT - 1 )
-  #define MRFI_ROLLOVER_EXTRAS BSP_ROLLOVER_EXTRAS
-  #define MRFI_ROLLOVER_ROLLOVERS  BSP_ROLLOVER_ROLLOVERS
+	#if BSP_TIMER_SIZE == 8 || BSP_TIMER_SIZE == 16
+		#define MRFI_TIMER_SZ 2
+	#endif
+	#define MRFI_ROLLOVER_LIMIT  ( BSP_ROLLOVER_LIMIT - 1 )
+	#define MRFI_ROLLOVER_EXTRAS BSP_ROLLOVER_EXTRAS
+	#define MRFI_ROLLOVER_ROLLOVERS  BSP_ROLLOVER_ROLLOVERS
 #endif
 #ifdef FREQUENCY_HOPPING
-  #ifndef MRFI_HOP_TIME_ms
-    #define MRFI_HOP_TIME_ms 400
-  #endif
-  #if MRFI_HOP_TIME_ms < 20
-    #error "ERROR: MRFI_HOP_TIME_ms must be greater than or equal to 20."
-  #endif
-  #define FHSS_HOP_MARGIN 4 /* 4ms of margin */
+	#ifndef MRFI_HOP_TIME_ms
+		#define MRFI_HOP_TIME_ms 400
+	#endif
+	#if MRFI_HOP_TIME_ms < 20
+		#error "ERROR: MRFI_HOP_TIME_ms must be greater than or equal to 20."
+	#endif
+	#define FHSS_HOP_MARGIN 4 /* 4ms of margin */
 #endif
 
 /* ------------------------------------------------------------------------------------------------

@@ -12,10 +12,25 @@
 #define SPIN_ABOUT_A_SECOND   NWK_DELAY(1000)
 
 void toggleLED(uint8_t);
+void createRandomAddress(addr_t * lAddr);
 
 int main (void)
 {
 	BSP_Init();
+
+  /* If an on-the-fly device address is generated it must be done before the
+   * call to SMPL_Init(). If the address is set here the ROM value will not
+   * be used. If SMPL_Init() runs before this IOCTL is used the IOCTL call
+   * will not take effect. One shot only. The IOCTL call below is conformal.
+   */
+#ifdef I_WANT_TO_CHANGE_DEFAULT_ROM_DEVICE_ADDRESS_PSEUDO_CODE
+	{
+		addr_t lAddr;
+
+		createRandomAddress(&lAddr);
+		SMPL_Ioctl(IOCTL_OBJ_ADDR, IOCTL_ACT_SET, &lAddr);
+	}
+#endif /* I_WANT_TO_CHANGE_DEFAULT_ROM_DEVICE_ADDRESS_PSEUDO_CODE */
 
 	/* On FHSS systems the call to SMPL_Init will not return until we have
 	 * locked onto a reference clock.  Also, on return the radio will always

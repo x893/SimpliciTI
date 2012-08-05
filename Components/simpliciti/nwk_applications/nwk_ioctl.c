@@ -193,77 +193,77 @@ smplStatus_t nwk_rawReceive(ioctlRawReceive_t *info)
  */
 smplStatus_t nwk_radioControl(ioctlAction_t action, void *val)
 {
-  smplStatus_t rc = SMPL_SUCCESS;
+	smplStatus_t rc = SMPL_SUCCESS;
 
-  if (IOCTL_ACT_RADIO_SLEEP == action)
-  {
-    /* go to sleep mode. */
-    MRFI_RxIdle();
-    MRFI_Sleep();
-  }
-  else if (IOCTL_ACT_RADIO_AWAKE == action)
-  {
-    MRFI_WakeUp();
+	if (IOCTL_ACT_RADIO_SLEEP == action)
+	{
+		/* go to sleep mode. */
+		MRFI_RxIdle();
+		MRFI_Sleep();
+	}
+	else if (IOCTL_ACT_RADIO_AWAKE == action)
+	{
+		MRFI_WakeUp();
 
-#if !defined( END_DEVICE )
-    MRFI_RxOn();
-#endif
+	#if !defined( END_DEVICE )
+		MRFI_RxOn();
+	#endif
 
-  }
-  else if (IOCTL_ACT_RADIO_SIGINFO == action)
-  {
-    ioctlRadioSiginfo_t *pSigInfo = (ioctlRadioSiginfo_t *)val;
-    connInfo_t          *pCInfo   = nwk_getConnInfo(pSigInfo->lid);
+	}
+	else if (IOCTL_ACT_RADIO_SIGINFO == action)
+	{
+		ioctlRadioSiginfo_t *pSigInfo = (ioctlRadioSiginfo_t *)val;
+		connInfo_t          *pCInfo   = nwk_getConnInfo(pSigInfo->lid);
 
-    if (!pCInfo)
-    {
-      return SMPL_BAD_PARAM;
-    }
-    memcpy(&pSigInfo->sigInfo, &pCInfo->sigInfo, sizeof(pCInfo->sigInfo));
-  }
-  else if (IOCTL_ACT_RADIO_RSSI == action)
-  {
-    *((rssi_t *)val) = MRFI_Rssi();
-  }
-  else if (IOCTL_ACT_RADIO_RXON == action)
-  {
-    MRFI_RxOn();
-  }
-  else if (IOCTL_ACT_RADIO_RXIDLE == action)
-  {
-    MRFI_RxIdle();
-  }
+		if (!pCInfo)
+		{
+		return SMPL_BAD_PARAM;
+		}
+		memcpy(&pSigInfo->sigInfo, &pCInfo->sigInfo, sizeof(pCInfo->sigInfo));
+	}
+	else if (IOCTL_ACT_RADIO_RSSI == action)
+	{
+		*((rssi_t *)val) = MRFI_Rssi();
+	}
+	else if (IOCTL_ACT_RADIO_RXON == action)
+	{
+		MRFI_RxOn();
+	}
+	else if (IOCTL_ACT_RADIO_RXIDLE == action)
+	{
+		MRFI_RxIdle();
+	}
 #ifdef EXTENDED_API
-  else if (IOCTL_ACT_RADIO_SETPWR == action)
-  {
-    uint8_t idx;
+	else if (IOCTL_ACT_RADIO_SETPWR == action)
+	{
+		uint8_t idx;
 
-    switch (*(ioctlLevel_t *)val)
-    {
-      case IOCTL_LEVEL_2:
-        idx = 2;
-        break;
+		switch (*(ioctlLevel_t *)val)
+		{
+		case IOCTL_LEVEL_2:
+			idx = 2;
+			break;
 
-      case IOCTL_LEVEL_1:
-        idx = 1;
-        break;
+		case IOCTL_LEVEL_1:
+			idx = 1;
+			break;
 
-      case IOCTL_LEVEL_0:
-        idx = 0;
-        break;
+		case IOCTL_LEVEL_0:
+			idx = 0;
+			break;
 
-      default:
-        return SMPL_BAD_PARAM;
-    }
-    MRFI_SetRFPwr(idx);
-    return SMPL_SUCCESS;
-  }
+		default:
+			return SMPL_BAD_PARAM;
+		}
+		MRFI_SetRFPwr(idx);
+		return SMPL_SUCCESS;
+	}
 #endif  /* EXTENDED_API */
-  else
-  {
-    rc = SMPL_BAD_PARAM;
-  }
-  return rc;
+	else
+	{
+		rc = SMPL_BAD_PARAM;
+	}
+	return rc;
 }
 
 /******************************************************************************

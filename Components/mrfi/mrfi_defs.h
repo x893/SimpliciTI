@@ -55,6 +55,7 @@
 #define MRFI_FORCE_ASSERT()     BSP_FORCE_ASSERT()
 #define MRFI_ASSERTS_ARE_ON     BSP_ASSERTS_ARE_ON
 
+
 /* ------------------------------------------------------------------------------------------------
  *                                    Radio Family Assigment
  * ------------------------------------------------------------------------------------------------
@@ -63,6 +64,7 @@
 /* ------ Radio Family 1 ------ */
 #if (defined MRFI_CC1100) /* Sub 1 GHz RF Transceiver */ || \
     (defined MRFI_CC1101) /* Sub 1 GHz RF Transceiver */ || \
+    (defined MRFI_CC110L) /* Sub 1 GHz RF Transceiver */ || \
     (defined MRFI_CC1100E_470)  /* Sub 1 GHz RF Transceiver (CC1100E Asia) */ || \
     (defined MRFI_CC1100E_950)  /* Sub 1 GHz RF Transceiver (CC1100E Asia) */ || \
     (defined MRFI_CC2500) /* 2.4 GHz RF Transceiver */
@@ -78,6 +80,7 @@
 /* ------ Radio Family 3 ------ */
 #elif (defined MRFI_CC2420) /* 2.4 GHz IEEE 802.15.4 RF Transceiver */ || \
       (defined MRFI_CC2520) /* 2.4 GHz IEEE 802.15.4 RF Transceiver */
+
 	#define MRFI_RADIO_FAMILY3
 
 /* ------ Radio Family 4 ------ */
@@ -91,11 +94,13 @@
 
 /* ------ Radio Family 6 ------ */
 #elif (defined MRFI_CC2530) /* 2.4 GHz IEEE 802.15.4 SoC */
+
 	#define MRFI_RADIO_FAMILY6
 
 #else
 	#error "ERROR: Unknown or missing radio selection."
 #endif
+
 
 /* ------------------------------------------------------------------------------------------------
  *                                Radio Family 1 / Radio Family 2 / Radio Family 5
@@ -118,8 +123,8 @@
 	#else
 		#define __mrfi_NUM_LOGICAL_CHANS__	25
 	#endif
-
 	#define __mrfi_NUM_POWER_SETTINGS__     3
+
 	#define __mrfi_BACKOFF_PERIOD_USECS__   250
 
 	#define __mrfi_LENGTH_FIELD_OFS__       0
@@ -134,6 +139,7 @@
 	#define __mrfi_SET_PAYLOAD_LEN__(p,x)   st( (p)->frame[__mrfi_LENGTH_FIELD_OFS__] = x + __mrfi_HEADER_SIZE__; )
 
 #endif
+
 
 /* ------------------------------------------------------------------------------------------------
  *                                Radio Family 3 / Radio Family 4 / Radio Family 6
@@ -158,8 +164,8 @@
 	#else
 		#define __mrfi_NUM_LOGICAL_CHANS__	25
 	#endif
-
 	#define __mrfi_NUM_POWER_SETTINGS__     3
+
 	#define __mrfi_BACKOFF_PERIOD_USECS__   250
 	
 	#define __mrfi_LENGTH_FIELD_OFS__       0
@@ -193,20 +199,21 @@
  */
 
 /* verify that only one supported radio is selected */
-#define MRFI_NUM_SUPPORTED_RADIOS_SELECTED   ((defined MRFI_CC1100) + \
-                                              (defined MRFI_CC1101) + \
-                                              (defined MRFI_CC1110) + \
-                                              (defined MRFI_CC1111) + \
-                                              (defined MRFI_CC1100E_470) + \
-                                              (defined MRFI_CC1100E_950) + \
-                                              (defined MRFI_CC2500) + \
-                                              (defined MRFI_CC2510) + \
-                                              (defined MRFI_CC2511) + \
-                                              (defined MRFI_CC2430) + \
-                                              (defined MRFI_CC2431) + \
-                                              (defined MRFI_CC2520) + \
-                                              (defined MRFI_CC430)  + \
-                                              (defined MRFI_CC2530))
+#define MRFI_NUM_SUPPORTED_RADIOS_SELECTED	((defined MRFI_CC1100) + \
+											(defined MRFI_CC1101) + \
+											(defined MRFI_CC110L) + \
+											(defined MRFI_CC1110) + \
+											(defined MRFI_CC1111) + \
+											(defined MRFI_CC1100E_470) + \
+											(defined MRFI_CC1100E_950) + \
+											(defined MRFI_CC2500) + \
+											(defined MRFI_CC2510) + \
+											(defined MRFI_CC2511) + \
+											(defined MRFI_CC2430) + \
+											(defined MRFI_CC2431) + \
+											(defined MRFI_CC2520) + \
+											(defined MRFI_CC430)  + \
+											(defined MRFI_CC2530))
 #if (MRFI_NUM_SUPPORTED_RADIOS_SELECTED == 0)
 #error "ERROR: A valid radio is not selected."
 #elif (MRFI_NUM_SUPPORTED_RADIOS_SELECTED > 1)

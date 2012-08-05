@@ -85,11 +85,11 @@
  *                                            Interrupts
  * ------------------------------------------------------------------------------------------------
  */
-#define BSP_ISR_FUNCTION(func,vect)     __bsp_ISR_FUNCTION__(func,vect)
+#define BSP_ISR_FUNCTION(func,vect)		__bsp_ISR_FUNCTION__(func,vect)
 
-#define BSP_ENABLE_INTERRUPTS()         __bsp_ENABLE_INTERRUPTS__()
-#define BSP_DISABLE_INTERRUPTS()        __bsp_DISABLE_INTERRUPTS__()
-#define BSP_INTERRUPTS_ARE_ENABLED()    __bsp_INTERRUPTS_ARE_ENABLED__()
+#define BSP_ENABLE_INTERRUPTS()			__bsp_ENABLE_INTERRUPTS__()
+#define BSP_DISABLE_INTERRUPTS()		__bsp_DISABLE_INTERRUPTS__()
+#define BSP_INTERRUPTS_ARE_ENABLED()	__bsp_INTERRUPTS_ARE_ENABLED__()
 
 
 /* ------------------------------------------------------------------------------------------------
@@ -123,24 +123,17 @@ typedef __bsp_ISTATE_T__  bspIState_t;
 	#define BSP_DBG_CRITICAL_START( )
 	#define BSP_DBG_CRITICAL_STOP( )
 #endif
-#define BSP_ENTER_CRITICAL_SECTION(x)   st(		\
-		BSP_DBG_CRITICAL_START();				\
-		x = __bsp_GET_ISTATE__();				\
-		__bsp_DISABLE_INTERRUPTS__();			\
-		)
+#define BSP_ENTER_CRITICAL_SECTION(x)   st( BSP_DBG_CRITICAL_START();	\
+											x = __bsp_GET_ISTATE__();	\
+                                            __bsp_DISABLE_INTERRUPTS__(); )
+#define BSP_EXIT_CRITICAL_SECTION(x)    st( __bsp_RESTORE_ISTATE__(x);				\
+											if ( __bsp_INTERRUPTS_ARE_ENABLED__() )	\
+												BSP_DBG_CRITICAL_STOP(); )
+#define BSP_CRITICAL_STATEMENT(x)       st( bspIState_t s;					\
+											BSP_ENTER_CRITICAL_SECTION(s);	\
+											x;								\
+                                            BSP_EXIT_CRITICAL_SECTION(s); )
 
-#define BSP_EXIT_CRITICAL_SECTION(x)    st(		\
-		__bsp_RESTORE_ISTATE__(x);				\
-		if ( __bsp_INTERRUPTS_ARE_ENABLED__() ) \
-			BSP_DBG_CRITICAL_STOP();			\
-		)
-
-#define BSP_CRITICAL_STATEMENT(x)       st(		\
-		bspIState_t s;                    		\
-		BSP_ENTER_CRITICAL_SECTION(s);			\
-		x;										\
-		BSP_EXIT_CRITICAL_SECTION(s);			\
-		)
 
 /* ------------------------------------------------------------------------------------------------
  *                                           Asserts
@@ -189,7 +182,7 @@ void BSP_Init(void);
  *
  * Security encrypt/decrypt operates on unsigned long quantities. These must match on
  * source and destination platforms. These macros enforce the standard conversions.
- * Currently all platforms (CC2520/CC2x30 and STM32) are little endian.
+ * Currently all platforms (CC2520/CC2x30 and MSP430) are little endian.
  *
  *******************   Network order for encryption is LITTLE ENDIAN   ******************
  *

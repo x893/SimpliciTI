@@ -13,6 +13,7 @@
 #include "bsp.h"
 #include "bsp_config.h"
 #include <stddef.h>
+#include "bsp_leds.h"
 
 #define BSP_TIMER_CLK_MHZ   (BSP_CONFIG_CLOCK_MHZ_SELECT)
 #ifdef STM32F_AUTO
@@ -29,7 +30,11 @@
  */
 void __bsp_ASSERT(const char * file_name, int line, const char * func_name)
 {
-	uint32_t delay;
+	volatile uint32_t delay;
+	volatile uint8_t blinks = 8;
+
+	BSP_TURN_ON_LED2();
+	BSP_TURN_OFF_LED1();
 
 	DEBUG("ASSERT:");
 	DEBUG(file_name);
@@ -38,8 +43,28 @@ void __bsp_ASSERT(const char * file_name, int line, const char * func_name)
 	DEBUG_LN(")");
 	DEBUG_LN(func_name);
 	DEBUG_LN("RESET ...");
-	for(delay = 0; delay < 10000000; delay++)
+
+	while(blinks--)
+	{
+		for(delay = 0; delay < SystemCoreClock / 100; delay++)
+		{
+			__NOP();
+			__NOP();
+			__NOP();
+			__NOP();
+		}
+		BSP_TOGGLE_LED1();
+	}
+	BSP_TURN_OFF_LED2();
+
+	for(delay = 0; delay < SystemCoreClock / 10; delay++)
+	{
 		__NOP();
+		__NOP();
+		__NOP();
+		__NOP();
+	}
+
 	NVIC_SystemReset();
 }
 
@@ -87,21 +112,11 @@ void BSP_InitBoard(void)
 
 #if (defined BSP_DEBUG_PORT)
 	BSP_InitUSART(BSP_DEBUG_PORT, BSP_DEBUG_SPEED);
-	DEBUG_CLEAR();
 #endif
 
-	/* set MCU clock speed - driven by internal Digitally Controlled Oscillator (DCO) */
-
-	/* Configure TimerA for use by the delay function */
-	/* Reset the timer */
-
-	/* Clear all settings */
-
-	/* Select the clk source to be - SMCLK (Sub-Main CLK)*/
-
 #if defined(SW_TIMER)
-	#define MHZ_CLOCKS_PER_USEC      BSP_CLOCK_MHZ
-	#define MHZ_CLOCKS_PER_ITERATION 4
+	#define MHZ_CLOCKS_PER_USEC			BSP_CLOCK_MHZ
+	#define MHZ_CLOCKS_PER_ITERATION	1
 
 	sIterationsPerUsec = (uint8_t)(((MHZ_CLOCKS_PER_USEC) / (MHZ_CLOCKS_PER_ITERATION)) + .5);
 
@@ -136,7 +151,7 @@ void BSP_Delay(uint16_t usec)
 	 * it also generates more code...
 	 */
 	volatile uint16_t repeatCount = (sIterationsPerUsec * usec) / 2;
-	while (repeatCount--) ;
+	while (repeatCount--);
 
 #endif  /* !SW_TIMER */
 }
@@ -153,6 +168,34 @@ void __bsp_debug_msg(const char * m)
 {
 	while (*m != 0)
 		__bsp_debug(*m++);
+}
+void __bsp_debug_msg_ln(const char * m)
+{
+	__bsp_debug_msg(m);
+	__bsp_debug_msg("\r\n");
+}
+
+void __bsp_debug_hex_1(uint8_t num)
+{
+	char c;
+	c = num & 0xF;
+	if (c <= 9)
+		c += '0';
+	else
+		c += ('A' - 10);
+	__bsp_debug(c);
+}
+
+void __bsp_debug_hex(uint8_t num)
+{
+	__bsp_debug_hex_1(num >> 4);
+	__bsp_debug_hex_1(num);
+}
+
+void __bsp_debug_hex_ln(uint8_t num)
+{
+	__bsp_debug_hex(num);
+	__bsp_debug_msg("\r\n");
 }
 
 void __bsp_debug_dec(int num)
@@ -181,23 +224,12 @@ void __bsp_debug_dec(int num)
 				ch = (char)(num / m) + '0';
 				__bsp_debug(ch);
 				num %= m;
-				m /= 10;
 			}
+			m /= 10;
 		}
 	}
 }
 
-void __bsp_debug_msg_ln(const char * m)
-{
-	__bsp_debug_msg(m);
-	__bsp_debug_msg("\n");
-}
-
-const char DEBUG_CMD_CLEAR[] = { 0x14, 'E', 0 };
-void __bsp_debug_clear(void)
-{
-	__bsp_debug_msg(DEBUG_CMD_CLEAR);
-}
 #endif
 
 void BSP_InitUSART(USART_TypeDef * port, uint32_t speed)
@@ -205,19 +237,14 @@ void BSP_InitUSART(USART_TypeDef * port, uint32_t speed)
 	USART_InitTypeDef	USART_InitStructure;
 
 	if (port == USART1)
-	{
 		RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
-		__bsp_PIN_CONFIG__ (BSP_DEBUG_TX_PIN, PIN_MODE_AF_50 );
-		__bsp_PIN_CONFIG__ (BSP_DEBUG_RX_PIN, PIN_MODE_IN );
-	}
 	else if (port == USART2)
-	{
 		RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
-	}
 	else if (port == USART3)
-	{
 		RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
-	}
+
+	__bsp_PIN_CONFIG__ (BSP_DEBUG_TX_PIN, PIN_MODE_AF_50 );
+	__bsp_PIN_CONFIG__ (BSP_DEBUG_RX_PIN, PIN_MODE_IN );
 
 	USART_InitStructure.USART_BaudRate = speed;
 	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
@@ -227,7 +254,6 @@ void BSP_InitUSART(USART_TypeDef * port, uint32_t speed)
 	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 
 	USART_Init(port, &USART_InitStructure);
-//	USART_ITConfig(port, USART_IT_RXNE, ENABLE);
 	USART_Cmd(port, ENABLE);
 }
 
@@ -245,6 +271,11 @@ uint8_t BSP_RecvUSART(USART_TypeDef * port)
 	return USART_ReceiveData(port);
 }
 
+/**
+  * @brief  Initialize SPI channel
+  * @param  None
+  * @retval None
+  */
 void BSP_InitSPI(SPI_TypeDef * port)
 {
 	SPI_InitTypeDef   SPI_InitStructure;

@@ -56,7 +56,7 @@
 #define PKTCTRL1_ADDR_FILTER_ON     (PKTCTRL1_BASE_VALUE | (BV(0)|BV(1)))
 
 #ifdef MRFI_ASSERTS_ARE_ON
-#define RX_FILTER_ADDR_INITIAL_VALUE  0xFF
+	#define RX_FILTER_ADDR_INITIAL_VALUE  0xFF
 #endif
 
 
@@ -67,16 +67,16 @@
 
 /* ----- Radio Family 1 ----- */
 #if (defined MRFI_RADIO_FAMILY1)
-#include "../family1/mrfi_spi.h"
-#define MRFI_WRITE_REGISTER(x,y)      mrfiSpiWriteReg( x, y )
+	#include "../family1/mrfi_spi.h"
+	#define MRFI_WRITE_REGISTER(x,y)      mrfiSpiWriteReg( x, y )
 
 /* ----- Radio Family 2 ----- */
 #elif (defined MRFI_RADIO_FAMILY2)
-#define MRFI_WRITE_REGISTER(x,y)      st( x = y; )
+	#define MRFI_WRITE_REGISTER(x,y)      st( x = y; )
 
 /* unknown or missing radio family */
 #else
-#error "ERROR: Expected radio family not specified.  Most likely a project issue."
+	#error "ERROR: Expected radio family not specified.  Most likely a project issue."
 #endif
 
 
@@ -98,26 +98,26 @@
  *  The static assert below ensures that there is no mismatch.
  */
 #if defined( MRFI_CC2500 ) || defined( MRFI_CC2510 ) || defined( MRFI_CC2511 )
-#ifndef FREQUENCY_HOPPING
-static const uint8_t mrfiLogicalChanTable[] =
-{
-  SMARTRF_SETTING_CHANNR,
-  103,
-  202,
-  212
-};
-#else
-static const uint8_t mrfiLogicalChanTable[] = // randomized version
-{
-   44,  20,   4,  84, 156,
-   12, 172, 132,  92,  36,
-  148, 108, 164,  68, 180,
-   52,  76, 140, 116, 100,
-   28, 196,  60, 188, 124
-};
-#endif
+	#ifndef FREQUENCY_HOPPING
+		static const uint8_t mrfiLogicalChanTable[] =
+		{
+		  SMARTRF_SETTING_CHANNR,
+		  103,
+		  202,
+		  212
+		};
+	#else
+		static const uint8_t mrfiLogicalChanTable[] = // randomized version
+		{
+		   44,  20,   4,  84, 156,
+		   12, 172, 132,  92,  36,
+		  148, 108, 164,  68, 180,
+		   52,  76, 140, 116, 100,
+		   28, 196,  60, 188, 124
+		};
+	#endif
 
-#elif defined( MRFI_CC1100 ) || defined( MRFI_CC1101 ) || defined( MRFI_CC1110 ) || defined( MRFI_CC1111 )
+#elif defined( MRFI_CC1100 ) || defined( MRFI_CC1101 ) || defined( MRFI_CC110L ) || defined( MRFI_CC1110 ) || defined( MRFI_CC1111 )
 
 	#ifndef FREQUENCY_HOPPING
 		static const uint8_t mrfiLogicalChanTable[] =
@@ -141,44 +141,44 @@ static const uint8_t mrfiLogicalChanTable[] = // randomized version
 #elif defined(MRFI_CC1100E_470)
 	
 	#ifndef FREQUENCY_HOPPING
-	static const uint8_t mrfiLogicalChanTable[] =
-	{
-		SMARTRF_SETTING_CHANNR,
-		40,
-		60,
-		80
-	};
+		static const uint8_t mrfiLogicalChanTable[] =
+		{
+			SMARTRF_SETTING_CHANNR,
+			40,
+			60,
+			80
+		};
 	#else
-	static const uint8_t mrfiLogicalChanTable[] =
-	{
-		20,  36,  84,  80,   8,
-		32,  68,  48,  88, 100,
-		28,   4,  40,  16,  76,
-		12,  72,  60,  64,  52,
-		24,  44,  56,  96,  92
-	};
+		static const uint8_t mrfiLogicalChanTable[] =
+		{
+			20,  36,  84,  80,   8,
+			32,  68,  48,  88, 100,
+			28,   4,  40,  16,  76,
+			12,  72,  60,  64,  52,
+			24,  44,  56,  96,  92
+		};
 	#endif
 
 #elif defined(MRFI_CC1100E_950)
 
-#ifndef FREQUENCY_HOPPING
-static const uint8_t mrfiLogicalChanTable[] =
-{
-	SMARTRF_SETTING_CHANNR,
-	10,
-	15,
-	20
-};
-#else
-static const uint8_t mrfiLogicalChanTable[] =
-{
-	24,  5,  9, 10, 22,
-	 8, 14, 20, 16,  2,
-	 1, 25, 11,  7, 18,
-	17, 13, 12,  4,  6,
-	 3, 23, 21, 15, 19
-};
-#endif
+	#ifndef FREQUENCY_HOPPING
+		static const uint8_t mrfiLogicalChanTable[] =
+		{
+			SMARTRF_SETTING_CHANNR,
+			10,
+			15,
+			20
+		};
+	#else
+		static const uint8_t mrfiLogicalChanTable[] =
+		{
+			24,  5,  9, 10, 22,
+			 8, 14, 20, 16,  2,
+			 1, 25, 11,  7, 18,
+			17, 13, 12,  4,  6,
+			 3, 23, 21, 15, 19
+		};
+	#endif
 
 #else
 #error "ERROR: A valid radio is not specified."
@@ -233,6 +233,27 @@ static const uint8_t mrfiRFPowerTable[] =
   0x50
 };
 
+#elif defined( MRFI_CC110L )
+//	915MHz
+static const uint8_t mrfiRFPowerTable[] =
+{
+//	0xCC,	//   7 dBm
+//	0xC0,	//  12 dBm
+	0x0E,	// -20 dBm
+	0x27,	// -10 dBm
+	0x8E	//   0 dBm
+};
+/*	868MHz
+static const uint8_t mrfiRFPowerTable[] =
+{
+	0x17,	// -20 dBm
+	0x26,	// -10 dBm
+	0x50,	//   0 dBm
+	0xCD,	//   7 dBm
+	0xC0,	//  12 dBm
+};
+*/
+
 #elif defined( MRFI_CC1110 ) || defined( MRFI_CC1111 )
 static const uint8_t mrfiRFPowerTable[] =
 {
@@ -264,7 +285,7 @@ BSP_STATIC_ASSERT(__mrfi_NUM_POWER_SETTINGS__ == ((sizeof(mrfiRFPowerTable)/size
  *                                       Local Variables
  * ------------------------------------------------------------------------------------------------
  */
-static uint8_t mrfiRxFilterEnabled=0;
+static uint8_t mrfiRxFilterEnabled = 0;
 static uint8_t mrfiRxFilterAddr[MRFI_ADDR_SIZE] = { RX_FILTER_ADDR_INITIAL_VALUE };
 
 
@@ -280,19 +301,19 @@ static uint8_t mrfiRxFilterAddr[MRFI_ADDR_SIZE] = { RX_FILTER_ADDR_INITIAL_VALUE
  */
 void MRFI_SetLogicalChannel(uint8_t chan)
 {
-  /* logical channel is not valid? */
-  MRFI_ASSERT( chan < MRFI_NUM_LOGICAL_CHANS );
+	/* logical channel is not valid? */
+	MRFI_ASSERT( chan < MRFI_NUM_LOGICAL_CHANS );
 
-  /* make sure radio is off before changing channels */
-  Mrfi_RxModeOff();
+	/* make sure radio is off before changing channels */
+	Mrfi_RxModeOff();
 
-  MRFI_WRITE_REGISTER( CHANNR, mrfiLogicalChanTable[chan] );
+	MRFI_WRITE_REGISTER( CHANNR, mrfiLogicalChanTable[chan] );
 
-  /* turn radio back on if it was on before channel change */
-  if(mrfiRadioState == MRFI_RADIO_STATE_RX)
-  {
-    Mrfi_RxModeOn();
-  }
+	/* turn radio back on if it was on before channel change */
+	if(mrfiRadioState == MRFI_RADIO_STATE_RX)
+	{
+		Mrfi_RxModeOn();
+	}
 }
 
 /**************************************************************************************************
@@ -307,19 +328,19 @@ void MRFI_SetLogicalChannel(uint8_t chan)
  */
 void MRFI_SetRFPwr(uint8_t idx)
 {
-  /* is power level specified valid? */
-  MRFI_ASSERT( idx < MRFI_NUM_POWER_SETTINGS );
+	/* is power level specified valid? */
+	MRFI_ASSERT( idx < MRFI_NUM_POWER_SETTINGS );
 
-  /* make sure radio is off before changing power levels */
-  Mrfi_RxModeOff();
+	/* make sure radio is off before changing power levels */
+	Mrfi_RxModeOff();
 
-  MRFI_WRITE_REGISTER( PA_TABLE0, mrfiRFPowerTable[idx] );
+	MRFI_WRITE_REGISTER( PA_TABLE0, mrfiRFPowerTable[idx] );
 
-  /* turn radio back on if it was on before power level change */
-  if(mrfiRadioState == MRFI_RADIO_STATE_RX)
-  {
-    Mrfi_RxModeOn();
-  }
+	/* turn radio back on if it was on before power level change */
+	if(mrfiRadioState == MRFI_RADIO_STATE_RX)
+	{
+		Mrfi_RxModeOn();
+	}
 }
 
 /**************************************************************************************************
@@ -335,34 +356,34 @@ void MRFI_SetRFPwr(uint8_t idx)
  */
 uint8_t MRFI_SetRxAddrFilter(uint8_t * pAddr)
 {
-  /*
-   *  If first byte of filter address match fir byte of broadcast address,
-   *  there is a conflict with hardware filtering.
-   */
-  if (pAddr[0] == mrfiBroadcastAddr[0])
-  {
-    /* unable to set filter address */
-    return( 1 );
-  }
+	/*
+	 *  If first byte of filter address match fir byte of broadcast address,
+	 *  there is a conflict with hardware filtering.
+	 */
+	if (pAddr[0] == mrfiBroadcastAddr[0])
+	{
+		/* unable to set filter address */
+		return( 1 );
+	}
 
-  /*
-   *  Set the hardware address register.  The hardware address filtering only recognizes
-   *  a single byte but this does provide at least some automatic hardware filtering.
-   */
-  MRFI_WRITE_REGISTER( ADDR, pAddr[0] );
+	/*
+	 *  Set the hardware address register.  The hardware address filtering only recognizes
+	 *  a single byte but this does provide at least some automatic hardware filtering.
+	 */
+	MRFI_WRITE_REGISTER( ADDR, pAddr[0] );
 
-  /* save a copy of the filter address */
-  {
-    uint8_t i;
+	/* save a copy of the filter address */
+	{
+		uint8_t i;
 
-    for (i=0; i<MRFI_ADDR_SIZE; i++)
-    {
-      mrfiRxFilterAddr[i] = pAddr[i];
-    }
-  }
+		for (i = 0; i < MRFI_ADDR_SIZE; i++)
+		{
+			mrfiRxFilterAddr[i] = pAddr[i];
+		}
+	}
 
-  /* successfully set filter address */
-  return( 0 );
+	/* successfully set filter address */
+	return( 0 );
 }
 
 
@@ -378,13 +399,13 @@ uint8_t MRFI_SetRxAddrFilter(uint8_t * pAddr)
  */
 void MRFI_EnableRxAddrFilter(void)
 {
-  MRFI_ASSERT(mrfiRxFilterAddr[0] != mrfiBroadcastAddr[0]); /* filter address must be set before enabling filter */
+	MRFI_ASSERT(mrfiRxFilterAddr[0] != mrfiBroadcastAddr[0]); /* filter address must be set before enabling filter */
 
-  /* set flag to indicate filtering is enabled */
-  mrfiRxFilterEnabled = 1;
+	/* set flag to indicate filtering is enabled */
+	mrfiRxFilterEnabled = 1;
 
-  /* enable hardware filtering on the radio */
-  MRFI_WRITE_REGISTER( PKTCTRL1, PKTCTRL1_ADDR_FILTER_ON );
+	/* enable hardware filtering on the radio */
+	MRFI_WRITE_REGISTER( PKTCTRL1, PKTCTRL1_ADDR_FILTER_ON );
 }
 
 
@@ -400,11 +421,11 @@ void MRFI_EnableRxAddrFilter(void)
  */
 void MRFI_DisableRxAddrFilter(void)
 {
-  /* clear flag that indicates filtering is enabled */
-  mrfiRxFilterEnabled = 0;
+	/* clear flag that indicates filtering is enabled */
+	mrfiRxFilterEnabled = 0;
 
-  /* disable hardware filtering on the radio */
-  MRFI_WRITE_REGISTER( PKTCTRL1, PKTCTRL1_ADDR_FILTER_OFF );
+	/* disable hardware filtering on the radio */
+	MRFI_WRITE_REGISTER( PKTCTRL1, PKTCTRL1_ADDR_FILTER_OFF );
 }
 
 
@@ -421,57 +442,57 @@ void MRFI_DisableRxAddrFilter(void)
  */
 uint8_t MRFI_RxAddrIsFiltered(uint8_t * pAddr)
 {
-  uint8_t i;
-  uint8_t addrByte;
-  uint8_t filterAddrMatches;
-  uint8_t broadcastAddrMatches;
+	uint8_t i;
+	uint8_t addrByte;
+	uint8_t filterAddrMatches;
+	uint8_t broadcastAddrMatches;
 
-  /* first check to see if filtering is even enabled */
-  if (!mrfiRxFilterEnabled)
-  {
-    /*
-     *  Filtering is not enabled, so by definition the address is
-     *  not filtered.  Return zero to indicate address is not filtered.
-     */
-    return( 0 );
-  }
+	/* first check to see if filtering is even enabled */
+	if (!mrfiRxFilterEnabled)
+	{
+		/*
+		 *  Filtering is not enabled, so by definition the address is
+		 *  not filtered.  Return zero to indicate address is not filtered.
+		 */
+		return( 0 );
+	}
 
-  /* clear address byte match counts */
-  filterAddrMatches    = 0;
-  broadcastAddrMatches = 0;
+	/* clear address byte match counts */
+	filterAddrMatches    = 0;
+	broadcastAddrMatches = 0;
 
-  /* loop through address to see if there is a match to filter address of broadcast address */
-  for (i=0; i<MRFI_ADDR_SIZE; i++)
-  {
-    /* get byte from address to check */
-    addrByte = pAddr[i];
+	/* loop through address to see if there is a match to filter address of broadcast address */
+	for (i=0; i<MRFI_ADDR_SIZE; i++)
+	{
+		/* get byte from address to check */
+		addrByte = pAddr[i];
 
-    /* compare byte to filter address byte */
-    if (addrByte == mrfiRxFilterAddr[i])
-    {
-      filterAddrMatches++;
-    }
-    if (addrByte == mrfiBroadcastAddr[i])
-    {
-      broadcastAddrMatches++;
-    }
-  }
+		/* compare byte to filter address byte */
+		if (addrByte == mrfiRxFilterAddr[i])
+		{
+			filterAddrMatches++;
+		}
+		if (addrByte == mrfiBroadcastAddr[i])
+		{
+			broadcastAddrMatches++;
+		}
+	}
 
-  /*
-   *  If address is *not* filtered, either the "filter address match count" or
-   *  the "broadcast address match count" will equal the total number of bytes
-   *  in the address.
-   */
-  if ((broadcastAddrMatches == MRFI_ADDR_SIZE) || (filterAddrMatches == MRFI_ADDR_SIZE))
-  {
-    /* address *not* filtered, return zero */
-    return( 0 );
-  }
-  else
-  {
-    /* address filtered, return non-zero */
-    return( 1 );
-  }
+	/*
+	 *  If address is *not* filtered, either the "filter address match count" or
+	 *  the "broadcast address match count" will equal the total number of bytes
+	 *  in the address.
+	 */
+	if ((broadcastAddrMatches == MRFI_ADDR_SIZE) || (filterAddrMatches == MRFI_ADDR_SIZE))
+	{
+		/* address *not* filtered, return zero */
+		return( 0 );
+	}
+	else
+	{
+		/* address filtered, return non-zero */
+		return( 1 );
+	}
 }
 
 

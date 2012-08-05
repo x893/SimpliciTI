@@ -127,81 +127,81 @@ void nwk_QInit(void)
  */
 frameInfo_t *nwk_QfindSlot(uint8_t which)
 {
-  frameInfo_t *pFI, *oldest= 0, *newFI = 0;
-  uint8_t        i, num, newOrder = 0, orderTest;
+	frameInfo_t *pFI, *oldest= 0, *newFI = 0;
+	uint8_t        i, num, newOrder = 0, orderTest;
 
-  if (INQ == which)
-  {
-    pFI  = sInFrameQ;
-    num  = SIZE_INFRAME_Q;
-  }
-  else
-  {
-    pFI  = sOutFrameQ;
-    num  = SIZE_OUTFRAME_Q;
-  }
+	if (INQ == which)
+	{
+		pFI  = sInFrameQ;
+		num  = SIZE_INFRAME_Q;
+	}
+	else
+	{
+		pFI  = sOutFrameQ;
+		num  = SIZE_OUTFRAME_Q;
+	}
 
-  orderTest = num + 1;
+	orderTest = num + 1;
 
-  for (i=0; i<num; ++i, ++pFI)
-  {
-    /* if frame is available it's a candidate. */
-    if (pFI->fi_usage != FI_AVAILABLE)
-    {
-      if (INQ == which)  /* TODO: do cast-out for Tx as well */
-      {
+	for (i = 0; i < num; ++i, ++pFI)
+	{
+		/* if frame is available it's a candidate. */
+		if (pFI->fi_usage != FI_AVAILABLE)
+		{
+			if (INQ == which)  /* TODO: do cast-out for Tx as well */
+			{
 
-        /* need to know the number of occupied slots so we know the age value
-         * for the unoccupied slot (if there is one).
-         */
-        newOrder++;
+				/* need to know the number of occupied slots so we know the age value
+				 * for the unoccupied slot (if there is one).
+				 */
+				newOrder++;
 
-        /* make sure nwk_retrieveFrame() is not processing this frame */
-        if (FI_INUSE_TRANSITION == pFI->fi_usage)
-        {
-          continue;
-        }
-        /* is this frame older than any we've seen? */
-        if (orderTest > pFI->orderStamp)
-        {
-          /* yes. */
-          oldest    = pFI;
-          orderTest = pFI->orderStamp;
-        }
-      }
-    }
-    else
-    {
-      if (OUTQ == which)  /* TODO: do cast-out for Tx as well */
-      {
-        return pFI;
-      }
-      newFI = pFI;
-    }
-  }
+				/* make sure nwk_retrieveFrame() is not processing this frame */
+				if (FI_INUSE_TRANSITION == pFI->fi_usage)
+				{
+					continue;
+				}
+				/* is this frame older than any we've seen? */
+				if (orderTest > pFI->orderStamp)
+				{
+					/* yes. */
+					oldest    = pFI;
+					orderTest = pFI->orderStamp;
+				}
+			}
+		}
+		else
+		{
+			if (OUTQ == which)  /* TODO: do cast-out for Tx as well */
+			{
+				return pFI;
+			}
+			newFI = pFI;
+		}
+	}
 
-  /* did we find anything? */
-  if (!newFI)
-  {
-    /* queue was full. cast-out happens here...unless... */
-    if (!oldest)
-    {
-      /* This can happen if the queue is only of size 1 or 2 and all
-       * the frames are in transition when the Rx interrupt occurs.
-       */
-      return (frameInfo_t *)0;
-    }
-    newFI = oldest;
-    nwk_QadjustOrder(which, newFI->orderStamp);
-    newFI->orderStamp = i;
-  }
-  else
-  {
-    /* mark the available slot. */
-    newFI->orderStamp = ++newOrder;
-  }
+	/* did we find anything? */
+	if (!newFI)
+	{
+		/* queue was full. cast-out happens here...unless... */
+		if (!oldest)
+		{
+			/* This can happen if the queue is only of size 1 or 2 and all
+			 * the frames are in transition when the Rx interrupt occurs.
+			 */
+			return (frameInfo_t *)0;
+		}
+		newFI = oldest;
+		nwk_QadjustOrder(which, newFI->orderStamp);
+		newFI->orderStamp = i;
+	}
+	else
+	{
+		/* mark the available slot. */
+		newFI->orderStamp = ++newOrder;
+	}
 
-  return newFI;
+	return newFI;
 }
 
 /******************************************************************************
