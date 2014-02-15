@@ -30,6 +30,7 @@
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
           <SFDFile>SFD\ST\STM32F1xx\STM32F100xx.sfr</SFDFile>
+          <bCustSvd>0</bCustSvd>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
           <IncludePath></IncludePath>
@@ -97,6 +98,7 @@
           <StopOnExitCode>3</StopOnExitCode>
           <CustomArgument></CustomArgument>
           <IncludeLibraryModules></IncludeLibraryModules>
+          <ComprImg>1</ComprImg>
         </CommonProperty>
         <DllOption>
           <SimDllName>SARMCM3.DLL</SimDllName>
@@ -136,6 +138,7 @@
             <RestoreMemoryDisplay>1</RestoreMemoryDisplay>
             <RestoreFunctions>0</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
+            <RestoreTracepoints>0</RestoreTracepoints>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
           <TargetSelection>0</TargetSelection>
@@ -164,9 +167,14 @@
             <Capability>0</Capability>
             <DriverSelection>-1</DriverSelection>
           </Flash1>
+          <bUseTDR>1</bUseTDR>
           <Flash2>BIN\UL2CM3.DLL</Flash2>
           <Flash3></Flash3>
           <Flash4></Flash4>
+          <pFcarmOut></pFcarmOut>
+          <pFcarmGrp></pFcarmGrp>
+          <pFcArmRoot></pFcArmRoot>
+          <FcArmLst>0</FcArmLst>
         </Utilities>
         <TargetArmAds>
           <ArmAdsMisc>
@@ -216,7 +224,7 @@
             <RoSelD>3</RoSelD>
             <RwSelD>3</RwSelD>
             <CodeSel>0</CodeSel>
-            <OptFeed>1</OptFeed>
+            <OptFeed>0</OptFeed>
             <NoZi1>0</NoZi1>
             <NoZi2>0</NoZi2>
             <NoZi3>0</NoZi3>
@@ -347,7 +355,7 @@
             <uSurpInc>0</uSurpInc>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>MRFI_CC1101 CFG_END_DEVICE</Define>
+              <Define>MRFI_CC1101 CFG_END_DEVICE STM32VLDISCOVERY</Define>
               <Undefine></Undefine>
               <IncludePath>.\;..\..\..\..\..\Components\bsp;..\..\..\..\..\Components\bsp\drivers;..\..\..\..\..\Components\bsp\boards\STM32;..\..\..\..\..\Components\mrfi;..\..\..\..\..\Components\simpliciti\nwk;..\..\..\..\..\Components\simpliciti\nwk_applications;..\..\..\..\..\Libraries\CMSIS\CM3\CoreSupport;..\..\..\..\..\Libraries\CMSIS\CM3\DeviceSupport;..\..\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\inc</IncludePath>
             </VariousControls>
@@ -544,6 +552,7 @@
                   <StopOnExitCode>11</StopOnExitCode>
                   <CustomArgument></CustomArgument>
                   <IncludeLibraryModules></IncludeLibraryModules>
+                  <ComprImg>1</ComprImg>
                 </CommonProperty>
                 <FileArmAds>
                   <Aads>
@@ -584,6 +593,7 @@
                   <StopOnExitCode>11</StopOnExitCode>
                   <CustomArgument></CustomArgument>
                   <IncludeLibraryModules></IncludeLibraryModules>
+                  <ComprImg>1</ComprImg>
                 </CommonProperty>
                 <FileArmAds>
                   <Aads>
@@ -664,6 +674,11 @@
               <FileName>stm32f10x_usart.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_usart.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_crc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\Libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_crc.c</FilePath>
             </File>
           </Files>
         </Group>
